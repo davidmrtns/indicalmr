@@ -1,0 +1,22 @@
+﻿.btindicar {
+    background-color: #00643c !important;
+}
+
+p.mensagem {
+    font-weight: 600;
+    color: #6a6a6a;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+div.dados{
+    display: grid;
+}
+
+div.dados input{
+    border: 0;
+    padding: 0 2px;
+    font-size: 23px;
+    width: 100%;
+    outline: none;
+}

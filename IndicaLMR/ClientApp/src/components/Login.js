@@ -1,0 +1,64 @@
+import React, { Component, useState } from "react";
+import Recursos from "../classes/Recursos";
+import style from "./Login.module.css";
+import Fetch from "../classes/Fetch";
+import InputMask from "react-input-mask";
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+function Login() {
+    const recursos = new Recursos();
+    const fetch = new Fetch();
+    const LMRLogo = recursos.getLMRLogo();
+    const [enviado, setEnviado] = useState(null);
+    const [cpfDigitado, setCpfDigitado] = useState(false);
+    const [exibirSenha, setExibirSenha] = useState(false);
+
+    async function enviarSolicitacao() {
+        setEnviado(true);
+
+        var cpf = document.getElementById("cpf").value.replace(/[.\-_]/g, '');
+        var senha = document.getElementById("senha").value;
+
+        if (cpf.length === 11 && senha) {
+            var resultado = await fetch.conectar(cpf, senha);
+
+            if (resultado.status === 200) {
+                window.location.href = "/";
+            } else if (resultado.status === 401) {
+                alert('O usuário ou senha inseridos não existem');
+                setEnviado(false);
+            }
+        } else {
+            alert('Digite um CPF e senha válidos!');
+            setEnviado(false);
+        }
+    }
+
+    return (
+        <div className={style.login}>
+            <div className={style.logincard}>
+                <LMRLogo className={style.logolmr} />
+                <div className={style.formulario}>
+                    <h1>Login</h1>
+                    <div className={style.campo}>
+                        <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={() => setCpfDigitado(false)} />
+                    </div>
+                    <div className={style.campo}>
+                        <input placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} />
+                        <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                    </div>
+                    <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>
+                    <div className={style.botao}>
+                        <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
+                            {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
+                                : "Entrar"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Login;

@@ -1,0 +1,93 @@
+﻿div.premio {
+    background: #1e00c3;
+    color: white;
+    display: grid;
+    padding: 6px 20px;
+    border-radius: 13px;
+    gap: 6px;
+    cursor: pointer;
+}
+
+div.premio p{
+    margin: 0;
+    color: white;
+}
+
+div.premio div{
+    display: flex;
+}
+
+div.premio div.nome{
+    font-weight: bold;
+    font-size: 20px;
+    justify-content: space-between;
+}
+
+div.premio div.nome p.valor{
+    font-weight: normal;
+}
+
+div.premio div.descricao p{
+    width: 100%;
+}
+
+div.premio div.divacao{
+    justify-content: end;
+    gap: 10px;
+}
+
+div.premio input{
+    border: 0;
+    background: 0;
+    border-bottom: 1px solid white;
+    color: white;
+    outline: none;
+    max-width: 250px;
+    width: 100%;
+}
+
+div.premio input::placeholder{
+    color: #a0a0a0;
+}
+
+div.edicao{
+    flex-direction: column;
+}
+
+div.edicao div{
+    max-width: 100%;
+    justify-content: unset;
+}
+
+div.edicao textarea{
+    background: white;
+    color: black;
+    max-width: 100%;
+    border: 0;
+    outline: none;
+    width: 100%;
+    padding: 0 6px;
+}
+
+div.divdescricao {
+    margin-top: 20px;
+    flex-direction: column;
+}
+
+div.divdescricao p{
+    margin-bottom: 5px;
+    text-align: left;
+    width: 100%;
+}
+
+.acao{
+    cursor: pointer;
+}
+
+.selecionado {
+    background: #ffb400 !important;
+}
+
+.selecionado p{
+    color: black !important;
+}

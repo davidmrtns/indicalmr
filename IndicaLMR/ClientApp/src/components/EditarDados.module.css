@@ -1,0 +1,97 @@
+﻿div.dados {
+    padding-top: 35px;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+}
+
+div.dados h1{
+    color: white;
+}
+
+div.formulario {
+    display: grid;
+    background: #ffffff1a;
+    border-radius: 20px;
+    border: 1px solid white;
+    margin: 0 20px;
+    margin-top: 20px;
+}
+
+div.formulario button{
+    width: 166px;
+    border-radius: 13px;
+    height: 40px;
+    border: 0;
+    background: #d9d9d9;
+    transition: 1s;
+}
+
+div.campo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    margin: 0 22px;
+    gap: 10px;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+}
+
+div.campo input{
+    height: 35px;
+    border: 0;
+    margin-bottom: 0;
+    margin-top: 22px;
+    width: 100%;
+    padding: 5px;
+    color: white;
+    background: none;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+}
+
+div.campo input::placeholder{
+    color: #c6c6c6;
+}
+
+div.botoes{
+    display: grid;
+    justify-items: center;
+    padding: 20px 0;
+    gap: 10px;
+}
+
+p.editardado {
+    margin-bottom: 5px;
+    color: white;
+    position: absolute;
+    cursor: pointer;
+}
+
+button.salvardados {
+    background: #0074b8 !important;
+    color: white;
+}
+
+.mensagem {
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+div.requisitos {
+    color: white;
+    padding: 15px 10px;
+}
+
+div.requisitos p{
+    margin-bottom: 0;
+}
+
+div.requisitos h5 + p, div.requisitos p + p{
+    margin-top: 14px;
+}

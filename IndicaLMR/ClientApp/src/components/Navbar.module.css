@@ -1,0 +1,41 @@
+﻿div.navbar {
+    background: #00643c;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+div.navbar h1{
+    margin-bottom: 0;
+}
+
+div.navbar div.logo{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+div.navbar div.links{
+    display: flex;
+    gap: 22px;
+    align-items: center;
+}
+
+div.navbar a{
+    margin: 0;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+}
+
+.logolmr {
+    width: 90px;
+    height: 60px;
+}
+
+.logolmr > *{
+    fill: white;
+}

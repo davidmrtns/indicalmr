@@ -1,0 +1,49 @@
+﻿div.container {
+    background: #1e00c3;
+    color: white;
+    display: flex;
+    padding: 17px 20px;
+    margin: 0 20px;
+    border-radius: 13px;
+}
+
+div.container div{
+    max-width: 25%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.container div p{
+    margin: 0;
+    text-align: left;
+}
+
+div.container div.nome{
+    font-weight: bold;
+    justify-content: start;
+}
+
+div.container div.exibir{
+    justify-content: end;
+}
+
+div.container div.exibir > * {
+    cursor: pointer;
+}
+
+div.container div p.semcpf{
+    opacity: 0.6;
+}
+
+div.container div input{
+    background: none;
+    border: 0;
+    color: white;
+    text-align: center;
+}
+
+div.baixado {
+    background: #35353585;
+}

@@ -1,0 +1,157 @@
+﻿body {
+    background: #00643c;
+}
+
+div.cadastro {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+div.cadastro div.campo{
+    margin: 0 22px;
+    margin-bottom: 10px;
+}
+
+div.cadastro div.campo p.exibirsenha{
+    margin-bottom: 5px;
+    color: white;
+    position: absolute;
+    cursor: pointer;
+}
+
+.logolmr > *{
+    fill: white;
+}
+
+.cadastrocard {
+    padding-top: 35px;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+}
+
+.enviado {
+    width: 40px !important;
+    border-radius: 21px !important;
+    transition: 1s;
+}
+
+.link {
+    margin-top: 10px;
+    color: white;
+}
+
+.cadastrocard h1 {
+    margin-top: 19px;
+    margin-bottom: 6px;
+    color: white;
+}
+
+.formulario {
+    display: grid;
+    margin: 0 20px;
+    margin-top: 20px;
+}
+
+.formulario label{
+    width: 100%;
+}
+
+.formulario input {
+    height: 35px;
+    border: 0;
+    margin-bottom: 0;
+    margin-top: 22px;
+    width: 100%;
+    padding: 5px;
+    color: white;
+    background: none;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    border-bottom: 1px solid white;
+}
+
+.formulario input::placeholder {
+    color: #b3b3b3;
+}
+
+.enviando {
+    width: 26px;
+}
+
+.formulario button {
+    margin-top: 42px;
+    width: 166px;
+    border-radius: 13px;
+    height: 40px;
+    border: 0;
+    background: #d9d9d9;
+    transition: 1s;
+}
+
+.formulario button {
+    margin-bottom: 35px;
+}
+
+.mensagem {
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.valido {
+    color: #69ff69;
+}
+
+.invalido {
+    color: black;
+}
+
+div.requisitos {
+    color: white;
+    padding: 15px 10px;
+    margin-top: 15px;
+    border: 1px solid #c2c2c2;
+    background: #ffffff3b;
+    border-radius: 20px;
+}
+
+div.requisitos p{
+    margin-bottom: 0;
+}
+
+div.requisitos h5 + p, div.requisitos p + p{
+    margin-top: 14px;
+}
+
+@media screen and (max-height: 432px) {
+    .formulario {
+        display: flex;
+    }
+
+    .cadastrocard {
+        width: 500px;
+        height: 172px;
+    }
+
+    .campo {
+        margin-right: 10px;
+    }
+
+    .campo input {
+        width: 175px;
+    }
+
+    .botao {
+        margin: 0 auto;
+    }
+
+    .botao button {
+        margin-top: 17px;
+        width: 107px;
+    }
+}

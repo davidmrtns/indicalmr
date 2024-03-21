@@ -1,0 +1,145 @@
+﻿div.login {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background: #00643c;
+}
+
+div.login div.campo{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    margin: 0 22px;
+    gap: 10px;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+}
+
+div.login div.campo p.exibirsenha{
+    margin-bottom: 5px;
+    color: white;
+    position: absolute;
+    cursor: pointer;
+}
+
+.logolmr > *{
+    fill: white;
+}
+
+.logincard {
+    padding-top: 35px;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+}
+
+.enviado {
+    width: 40px !important;
+    border-radius: 21px !important;
+    transition: 1s;
+}
+
+.link {
+    margin-top: 10px;
+    color: white;
+}
+
+.logincard h1 {
+    margin-top: 19px;
+    margin-bottom: 6px;
+    color: white;
+}
+
+.formulario {
+    display: grid;
+    background: #ffffff1a;
+    border-radius: 20px;
+    border: 1px solid white;
+    margin: 0 20px;
+    margin-top: 20px;
+}
+
+.formulario label{
+    width: 100%;
+}
+
+.formulario input {
+    height: 35px;
+    border: 0;
+    margin-bottom: 0;
+    margin-top: 22px;
+    width: 100%;
+    padding: 5px;
+    color: white;
+    background: none;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+}
+
+.formulario input::placeholder {
+    color: #b3b3b3;
+}
+
+.enviando {
+    width: 26px;
+}
+
+.formulario button {
+    margin-top: 42px;
+    width: 166px;
+    border-radius: 13px;
+    height: 40px;
+    border: 0;
+    background: #d9d9d9;
+    transition: 1s;
+}
+
+.formulario button {
+    margin-bottom: 15px;
+}
+
+.mensagem {
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.valido {
+    color: #69ff69;
+}
+
+.invalido {
+    color: black;
+}
+
+@media screen and (max-height: 432px) {
+    .formulario {
+        display: flex;
+    }
+
+    .logincard {
+        width: 500px;
+        height: 172px;
+    }
+
+    .campo {
+        margin-right: 10px;
+    }
+
+    .campo input {
+        width: 175px;
+    }
+
+    .botao {
+        margin: 0 auto;
+    }
+
+    .botao button {
+        margin-top: 17px;
+        width: 107px;
+    }
+}

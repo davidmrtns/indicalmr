@@ -1,0 +1,105 @@
+﻿.aberto {
+    margin-top: -4px;
+    transform: rotate(180deg);
+}
+
+.desabilitado{
+    cursor: unset !important;
+    opacity: 40%;
+}
+
+div.indicacoes {
+    padding: 30px 20px;
+    background: #00643c;
+    border-radius: 15px;
+    margin: 0 10px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+div.indicacoes p{
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 0;
+    width: fit-content;
+    cursor: pointer;
+}
+
+div.indicacoes .colapsar{
+    width: 20px;
+    margin-top: -2px;
+    transition: 0.5s ease;
+}
+
+div.indicacoes img.icone{
+    position: absolute;
+    top: 50%;
+    right: 69px;
+    transform: translate(55%, -47%) rotate(-5deg);
+    width: 34%;
+    max-width: 132px;
+    opacity: 65%;
+}
+
+div.indicacoes table{
+    border: 1px solid white;
+    width: 100%;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+div.indicacoes table td, div.indicacoes table th{
+    padding: 5px;
+}
+
+div.indicacoes table td img{
+    width: 17px;
+}
+
+div.indicacoes table thead{
+    background: #3a5a40;
+    color: white;
+    border: 1px solid white;
+}
+
+div.indicacoes table tbody tr{
+    background: #a3b18a;
+}
+
+div.indicacoes table tbody tr:nth-child(odd){
+    background: #588157;
+}
+
+div.controles {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+div.controles div{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+div.controles p{
+    cursor: unset;
+}
+
+div.controles img {
+    position: unset;
+    transform: none;
+    width: 15px;
+    cursor: pointer;
+}
+
+div.carregando{
+    display: flex;
+    justify-content: center;
+}
+
+div.carregando img{
+    width: 50px;
+}

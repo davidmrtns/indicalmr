@@ -1,0 +1,48 @@
+﻿.invalido{
+    color: red;
+}
+
+.btresgatar {
+    background-color: #00643c !important;
+}
+
+.btconfirmar {
+    background-color: #ffb400 !important;
+    border-color: orange !important;
+    color: black !important;
+    font-weight: bold !important;
+}
+
+p.mensagem {
+    font-weight: 600;
+    color: #6a6a6a;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+div.valor{
+    display: flex;
+}
+
+div.valor p{
+    font-size: 23px;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+div.valor input{
+    border: 0;
+    padding: 0 2px;
+    font-size: 23px;
+    width: 100%;
+    outline: none;
+}
+
+div.containerpremios {
+    display: grid;
+    gap: 10px;
+    overflow-y: auto;
+    min-height: 90px;
+    max-height: 200px;
+    height: 100%;
+}
