@@ -25,7 +25,8 @@ namespace IndicaLMR.Controllers
                     HttpOnly = true,
                     Secure = true,
                     IsEssential = true,
-                    SameSite = SameSiteMode.Strict
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.Add(TimeSpan.FromHours(1))
                 });
                 return Ok(true);
             }
@@ -55,7 +56,6 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                //validar cpf e senha antes de permitir atualizar os dados
                 bool resposta = Parceiro.AtualizarDados((int)parceiroModel.id!, parceiroModel.cpf, parceiroModel.senha);
                 return Ok(resposta);
             }

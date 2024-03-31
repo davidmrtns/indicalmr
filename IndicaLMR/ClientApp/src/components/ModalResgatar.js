@@ -8,31 +8,49 @@ import ItemPremioDisplay from './ItemPremioDisplay';
 function ModalResgatar(props) {
     const fetch = new Fetch();
 
-    const [saldoResgate, setSaldoResgate] = useState(props.saldo);
+    const [saldoResgate, setSaldoResgate] = useState(null);
     const [valorSaldoResgate, setValorSaldoResgate] = useState(0);
-    const [mensagem, setMensagem] = useState(null);
-    const [concluido, setConcluido] = useState(false);
+    const [status, setStatus] = useState({
+        concluido: false,
+        sucesso: true,
+        mensagem: null
+    });
     const [exibirPremios, setExibirPremios] = useState(false);
     const [premios, setPremios] = useState(false);
     const [confirmarPremio, setConfirmarPremio] = useState(false);
     const [idPremioSelecionado, setIdPremioSelecionado] = useState(0);
     const [desselecionar, setDesselecionar] = useState(null);
+    const [realEmPonto, setRealEmPonto] = useState(null);
+
+    useEffect(() => {
+        const obterDados = async () => {
+            var valor = await fetch.obterRealPonto();
+            setRealEmPonto(valor);
+            setSaldoResgate(valor * props.saldo);
+        }
+        obterDados();
+    }, [])
 
     function fechar() {
         props.onHide();
         setIdPremioSelecionado(0);
         setConfirmarPremio(false);
         setExibirPremios(false);
-        setMensagem(null);
-        setConcluido(false);
+        setSaldoResgate(props.saldo * realEmPonto);
+        setStatus({
+            concluido: false,
+            sucesso: true,
+            mensagem: null
+        });
     }
 
-    function atualizarSaldoResgate(obj) {
-        var valor = Math.floor(obj.value);
+    const atualizarSaldoResgate = (valor) => {
         setValorSaldoResgate(valor);
 
-        if (valor >= 0) {
-            setSaldoResgate(props.saldo - valor);
+        if (valor > 0) {
+            setSaldoResgate((props.saldo * realEmPonto) - valor);
+        } else {
+            setSaldoResgate(props.saldo * realEmPonto);
         }
     }
 
@@ -68,47 +86,27 @@ function ModalResgatar(props) {
         if (idPremioSelecionado !== 0) {
             var resposta = await fetch.criarTransacao(props.usuario, 0, 2, idPremioSelecionado);
             if (resposta) {
-                setConcluido(true);
-                setMensagem("Seu prêmio foi resgatado! Compareça ao escritório para retirá-lo");
+                setStatus({
+                    concluido: true,
+                    sucesso: true,
+                    mensagem: "Seu prêmio foi resgatado! Compareça ao escritório para retirá-lo"
+                });
 
                 var atualizacao = await fetch.atualizarUsuario();
                 if (atualizacao) {
                     props.atualizar();
                 }
             } else {
-                setConcluido(true);
-                setMensagem("Opa, parece que seu saldo de crédito é insuficiente. Tente novamente");
+                setStatus({
+                    concluido: true,
+                    sucesso: false,
+                    mensagem: "Parece que seu saldo de crédito é insuficiente"
+                });
             }
         } else {
-            setMensagem("Nenhum prêmio foi selecionado");
-        }
-    }
-
-    async function resgatar() {
-        if (valorSaldoResgate >= 10 && valorSaldoResgate <= props.saldo) {
-            setMensagem(null);
-
-            var resposta = await fetch.criarTransacao(props.usuario, valorSaldoResgate, 0, null);
-            if (resposta) {
-                setConcluido(true);
-                setMensagem("Resgate registrado. Compareça à unidade física do escritório para receber");
-
-                var atualizacao = await fetch.atualizarUsuario();
-                if (atualizacao) {
-                    props.atualizar();
-                }
-
-            } else {
-                alert("Opa, parece que seu saldo de crédito é insuficiente. Tente novamente");
-            }
-        } else if (props.saldo === 0) {
-            setMensagem("Você não tem saldo disponível");
-        } else if (valorSaldoResgate <= 0) {
-            setMensagem("Insira um valor válido");
-        } else if (valorSaldoResgate < 10) {
-            setMensagem("O valor mínimo para resgate é de R$ 10,00");
-        } else {
-            setMensagem("O valor inserido é maior do que o saldo disponível");
+            setStatus({
+                mensagem: "Nenhum prêmio foi selecionado"
+            });
         }
     }
 
@@ -120,42 +118,33 @@ function ModalResgatar(props) {
             centered
         >
             <Modal.Body>
-                {concluido ?
+                {status.concluido ?
                     <>
-                        <h1>Sucesso!</h1>
-                        <p>{mensagem}</p>
+                        <h1>{status.sucesso ? "Sucesso!" : "Ops..."}</h1>
+                        <p>{status.mensagem}</p>
                     </> : <>
-                        {exibirPremios ? 
-                            <>
-                                <h1>Qual prêmio você deseja resgatar?</h1>
-                                <div className={style.containerpremios}>
-                                    {premios && premios.length > 0 ?
-                                        premios.map((premio) => (
-                                            <ItemPremioDisplay premio={premio} verificar={verificarStatus} selecionar={selecionar} definirId={definirIdPremio} desselecionar={funcDesselecionar} executarDessel={executarDessel} />
-                                        ))
-                                    : ""}
-                                </div>
-                            </>
-                        :<>
-                            <h1>{props.resgate === true ? "Qual é o valor do resgate?" : "Qual valor você deseja abater?"}</h1>
-                            <p className={saldoResgate < 0 ? style.invalido : ""}>Saldo após o {props.resgate === true ? "resgate" : "abate"}: R$ {saldoResgate}</p>
-                            <div className={style.valor}>
-                                <p>R$</p>
-                                <input placeholder="0,00" type="number" min={props.saldo < 10 ? 0 : 10} max={props.saldo} onChange={(e) => atualizarSaldoResgate(e.target)} id="valor" />
+                        <>
+                            <h1>Qual prêmio você deseja resgatar?</h1>
+                            <p className={style.conversao}>R$ 1,00 = {realEmPonto} ponto(s)</p>
+                            <p className={saldoResgate < 0 ? style.invalido : ""}>Saldo após o resgate: {saldoResgate} pontos ~ R$ {saldoResgate / realEmPonto},00</p>
+                            <div className={style.containerpremios}>
+                                {premios && premios.length > 0 ?
+                                    premios.map((premio) => (
+                                        <ItemPremioDisplay premio={premio} verificar={verificarStatus} selecionar={selecionar} definirId={definirIdPremio} desselecionar={funcDesselecionar} executarDessel={executarDessel} atualizarSaldo={atualizarSaldoResgate} />
+                                    ))
+                                : ""}
                             </div>
-                            {mensagem ? <p className={style.mensagem}>{mensagem}</p> : ""}
-                        </>}
+                        </>
                     </>
                 }
             </Modal.Body>
             <Modal.Footer>
-                {concluido ?
+                {status.concluido ?
                     <>
                         <Button onClick={() => fechar()}>Entendi</Button>
                     </> : <>
                         <Button onClick={() => fechar()}>Cancelar</Button>
-                        <Button className={confirmarPremio === true ? style.btconfirmar : style.btresgatar} disabled={props.saldo >= 1 ? false : true} onClick={idPremioSelecionado === 0 ? () => setExibirPremios(true) : () => resgatarPremio()}>Resgatar prêmio</Button>
-                        <Button className={style.btresgatar} disabled={props.saldo >= 1 ? false : true} onClick={exibirPremios === true ? () => setExibirPremios(false) : () => resgatar()}>{props.resgate === true ? "Resgatar valor" : "Abater"}</Button>
+                        <Button className={confirmarPremio === true ? style.btconfirmar : style.btresgatar} disabled={saldoResgate >= 1 ? false : true} onClick={idPremioSelecionado === 0 ? () => setExibirPremios(true) : () => resgatarPremio()}>Resgatar prêmio</Button>
                     </>
                 }
             </Modal.Footer>

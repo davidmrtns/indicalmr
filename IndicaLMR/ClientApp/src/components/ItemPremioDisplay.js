@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Fetch from "../classes/Fetch";
 import ModalConfirmacao from "./ModalConfirmacao";
 
-function ItemPremioDisplay({ premio, verificar, selecionar, definirId, desselecionar, executarDessel }) {
+function ItemPremioDisplay({ premio, verificar, selecionar, definirId, desselecionar, executarDessel, atualizarSaldo }) {
     const fetch = new Fetch();
     const [edicao, setEdicao] = useState(false);
     const [exibirModal, setExibirModal] = useState(false);
@@ -19,18 +19,22 @@ function ItemPremioDisplay({ premio, verificar, selecionar, definirId, desseleci
             if (premioSelecionado === true) {
                 setPremioSelecionado(false);
                 definirId(0);
+                atualizarSaldo(0);
                 selecionar(false);
             } else {
+                atualizarSaldo(0);
                 executarDessel();
                 setPremioSelecionado(true);
                 definirId(premio.id);
                 selecionar(true);
+                atualizarSaldo(premio.valor);
                 desselecionar(() => removerSelecao);
             }
         } else {
             setPremioSelecionado(true);
             definirId(premio.id);
             selecionar(true);
+            atualizarSaldo(premio.valor);
             desselecionar(() => removerSelecao);
         }
     }
@@ -46,7 +50,7 @@ function ItemPremioDisplay({ premio, verificar, selecionar, definirId, desseleci
             <div className={premioSelecionado === true ? styles.premio + " " + styles.selecionado : styles.premio} onClick={() => selecionarPremio()}>
                 <div className={styles.nome}>
                     <p>{premio.nome}</p>
-                    <p className={styles.valor}>R$ {premio.valor}</p>
+                    <p className={styles.valor}>{premio.valor} pontos</p>
                 </div>
                 <div className={styles.descricao}>
                     <p>{premio.descricao}</p>

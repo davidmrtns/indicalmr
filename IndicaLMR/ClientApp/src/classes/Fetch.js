@@ -394,6 +394,22 @@
         return resposta;
     }
 
+    async obterRealPonto() {
+        var resposta;
+
+        try {
+            await fetch('api/real-em-ponto/', {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
     async criarPremio(nome, valor, descricao, disponivel) {
         var resposta;
 

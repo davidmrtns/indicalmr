@@ -4,10 +4,12 @@ import Fetch from "../classes/Fetch";
 import { useState, useEffect } from "react";
 import { faGift } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Utils from "../classes/Utils";
 
 function ListaTransacoes() {
     const recursos = new Recursos();
     const fetch = new Fetch();
+    const utils = new Utils()
     const [exibirLista, setExibirLista] = useState(false);
     const [lista, setLista] = useState(null);
     const [pagina, setPagina] = useState(1);
@@ -43,8 +45,8 @@ function ListaTransacoes() {
                                     {lista.length >= 1 ?
                                         lista.map((transacao) => (
                                             <tr>
-                                                <td>{transacao.data}</td>
-                                                <td>R$ {transacao.valor}</td>
+                                                <td>{utils.formatarData(transacao.data)}</td>
+                                                {transacao.tipo === 0 || transacao.tipo === 1 ? <td>R$ {transacao.valor}</td> : <td>{transacao.valor} pontos</td>}
                                                 <td>{transacao.tipo === 0 ? "Resgate" : transacao.tipo === 1 ? "Abate" : <p className={style.premioresgatado}><FontAwesomeIcon icon={faGift} /> {transacao.nomePremio}</p>}</td>
                                             </tr>
                                         ))

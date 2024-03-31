@@ -20,6 +20,11 @@ p.mensagem {
     font-size: 14px;
 }
 
+p.conversao{
+    margin-bottom: 0;
+    opacity: 0.8;
+}
+
 div.valor{
     display: flex;
 }

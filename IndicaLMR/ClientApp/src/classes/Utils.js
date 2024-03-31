@@ -63,6 +63,11 @@ class Utils {
             return regex.test(senha);
         }
     }
+
+    formatarData(data) {
+        var dataObj = new Date(data + " UTC");
+        return dataObj.toLocaleDateString() + " às " + dataObj.toLocaleTimeString();
+    }
 }
 
 export default Utils;

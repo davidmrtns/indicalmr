@@ -15,14 +15,15 @@ builder.Services.AddAuthentication(options =>
     .AddCookie(options =>
     {
         options.Cookie.Name = "Authorization";
+        options.Cookie.Expiration = TimeSpan.FromHours(1);
     })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidIssuer = "https://lmradvogados.com.br/",
-            ValidAudience = "https://localhost:44408/",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SoIHaveThisSecurityKeyThatShouldBe256BytesLong.IHopeItIs!"!)),
+            ValidIssuer = Conexao.Issuer,
+            ValidAudience = Conexao.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Conexao.SecurityKey!)),
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
@@ -50,7 +51,6 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

@@ -2,18 +2,18 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace IndicaLMR.Classes
 {
     public class Token
     {
-        private const string TokenSecret = "SoIHaveThisSecurityKeyThatShouldBe256BytesLong.IHopeItIs!";
         private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(1);
 
         public static string CriarTokenUsuario(int id, string nome, string email, bool admin, bool financeiro)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(TokenSecret);
+            var key = Encoding.UTF8.GetBytes(Conexao.SecurityKey);
 
             var claims = new List<Claim>
             {
@@ -30,8 +30,8 @@ namespace IndicaLMR.Classes
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(TokenLifetime),
-                Issuer = "https://lmradvogados.com.br/",
-                Audience = "https://localhost:44408/",
+                Issuer = Conexao.Issuer,
+                Audience = Conexao.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };
 
@@ -43,7 +43,7 @@ namespace IndicaLMR.Classes
         public static string CriarTokenParceiro(int id, string nome, string cpf, string telefone)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(TokenSecret);
+            var key = Encoding.UTF8.GetBytes(Conexao.SecurityKey);
 
             var claims = new List<Claim>
             {
@@ -57,9 +57,10 @@ namespace IndicaLMR.Classes
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
+                IssuedAt = DateTime.UtcNow.ToLocalTime(),
                 Expires = DateTime.UtcNow.Add(TokenLifetime),
-                Issuer = "https://lmradvogados.com.br/",
-                Audience = "https://localhost:44408/",
+                Issuer = Conexao.Issuer,
+                Audience = Conexao.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };
 

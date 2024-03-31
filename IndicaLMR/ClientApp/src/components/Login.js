@@ -41,20 +41,22 @@ function Login() {
                 <LMRLogo className={style.logolmr} />
                 <div className={style.formulario}>
                     <h1>Login</h1>
-                    <div className={style.campo}>
-                        <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={() => setCpfDigitado(false)} />
-                    </div>
-                    <div className={style.campo}>
-                        <input placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} />
-                        <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
-                    </div>
-                    <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>
-                    <div className={style.botao}>
-                        <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
-                            {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
-                                : "Entrar"}
-                        </button>
-                    </div>
+                    <form autoComplete="on">
+                        <div className={style.campo}>
+                            <InputMask name="cpf" mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={() => setCpfDigitado(false)} />
+                        </div>
+                        <div className={style.campo}>
+                            <input name="senha" placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} />
+                            <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                        </div>
+                        <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>
+                        <div className={style.botao}>
+                            <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
+                                {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
+                                    : "Entrar"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

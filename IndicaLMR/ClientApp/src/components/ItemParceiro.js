@@ -4,9 +4,11 @@ import style from './ItemParceiro.module.css';
 import InputMask from "react-input-mask";
 import Fetch from '../classes/Fetch';
 import { Tooltip } from "react-tooltip";
+import Utils from '../classes/Utils';
 
 function ItemParceiro({ parceiro, transacao, exibir, atualizar }) {
     const fetch = new Fetch();
+    const utils = new Utils();
 
     async function mudarStatus(id) {
         await fetch.mudarStatusTransacao(id);
@@ -35,13 +37,13 @@ function ItemParceiro({ parceiro, transacao, exibir, atualizar }) {
         return (
             <div className={transacao.baixa === false ? style.container : style.container + " " + style.baixado}>
                 <div className={style.nome}>
-                    <p>{transacao.data}</p>
+                    <p>{utils.formatarData(transacao.data)}</p>
                 </div>
                 <div>
                     <p>{transacao.nomeParceiro}</p>
                 </div>
                 <div>
-                    <p>R$ {transacao.valor}</p>
+                    {transacao.tipo === 0 || transacao.tipo === 1 ? <p>R$ {transacao.valor},00</p> : <p>{transacao.valor} pontos</p>}
                 </div>
                 <div>
                     <p>{transacao.tipo === 0 ? "Resgate" : transacao.tipo === 1 ? "Abate" : <p><FontAwesomeIcon icon={faGift} /> {transacao.nomePremio}</p>}</p>

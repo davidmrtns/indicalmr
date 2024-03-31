@@ -291,6 +291,19 @@ namespace IndicaLMR.Controllers
             }
         }
 
+        [HttpGet("real-em-ponto")]
+        public IActionResult ObterValorRealPonto()
+        {
+            try
+            {
+                return Ok(Configuracao.ValorRealPonto());
+            }
+            catch
+            {
+                return BadRequest(false);
+            }
+        }
+
         [Authorize(Policy = "Admin")]
         [HttpGet("listar-indicacoes/{id}")]
         public IActionResult ListarIndicacoesParceiro(int id, [FromQuery] int pagina, [FromQuery] int tamanhoPagina)

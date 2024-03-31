@@ -77,5 +77,28 @@ namespace IndicaLMR.Classes
                 return false;
             }
         }
+
+        public static int ValorRealPonto()
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("SELECT valor FROM configuracao WHERE chave = @chave", con);
+                query.Parameters.AddWithValue("@chave", "convPontVal");
+
+                int valor = (int) query.ExecuteScalar();
+
+                con.Close();
+
+                return valor;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
     }
 }

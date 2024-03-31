@@ -10,7 +10,7 @@ namespace IndicaLMR.Classes
         public Asaas(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Add("access_token", "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAzOTg3MDU6OiRhYWNoXzM3NTI5YmFmLTlhZjEtNDRiMy04ZDIxLTg1ZmY3NDZlMjBkMw==");
+            _httpClient.DefaultRequestHeaders.Add("access_token", Conexao.TokenAsaas);
         }
 
         public async Task<string> BuscarId(string cpf)

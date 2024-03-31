@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 
 namespace IndicaLMR.Classes
 {
@@ -64,9 +65,18 @@ namespace IndicaLMR.Classes
 
         public bool CriarTransacao(int credito)
         {
+            int valorSaque = Valor;
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
 
-            if (credito >= Valor)
+            if (Tipo == 2)
+            {
+                con.Open();
+                MySqlCommand query = new MySqlCommand("SELECT valor FROM configuracao WHERE chave = 'convPontVal'", con);
+                valorSaque = Valor / ((int)query.ExecuteScalar());
+                con.Close();
+            }
+
+            if (credito >= valorSaque)
             {
                 try
                 {
@@ -75,7 +85,7 @@ namespace IndicaLMR.Classes
                     MySqlCommand query = new MySqlCommand("INSERT INTO transacao (id, parceiro, valor, tipo, baixa, premio) VALUES(@id, @idParceiro, @valor, @tipo, @baixa, @premio)", con);
                     query.Parameters.AddWithValue("@id", Id);
                     query.Parameters.AddWithValue("@idParceiro", IdParceiro);
-                    query.Parameters.AddWithValue("@valor", Valor);
+                    query.Parameters.AddWithValue("@valor", valorSaque);
                     query.Parameters.AddWithValue("@tipo", Tipo);
                     query.Parameters.AddWithValue("@baixa", Baixa);
                     query.Parameters.AddWithValue("@premio", Premio);
@@ -84,7 +94,7 @@ namespace IndicaLMR.Classes
 
                     con.Close();
 
-                    Parceiro.SacarCredito(IdParceiro, Valor);
+                    Parceiro.SacarCredito(IdParceiro, valorSaque);
                     return true;
                 }
                 catch
