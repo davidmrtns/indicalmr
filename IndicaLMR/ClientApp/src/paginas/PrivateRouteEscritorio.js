@@ -2,6 +2,7 @@ import React, { Children, Component, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import Fetch from '../classes/Fetch';
 import LoginEscritorio from '../components/LoginEscritorio';
+import Navbar from '../components/Navbar';
 
 function PrivateRouteEscritorio() {
     var fetch = new Fetch();
@@ -23,7 +24,10 @@ function PrivateRouteEscritorio() {
     function renderizar() {
         if (logado) {
             return (
-                <Outlet />
+                <>
+                    <Navbar />
+                    <Outlet />
+                </>
             );
         } else {
             return (

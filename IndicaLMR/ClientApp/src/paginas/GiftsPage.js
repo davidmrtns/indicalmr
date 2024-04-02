@@ -30,7 +30,6 @@ function GiftsPage() {
 
     return (
         <>
-            <Navbar />
             <div>
                 <div>
                     <h1 className={style.titulo}>Prêmios</h1>

@@ -1,5 +1,5 @@
 import style from './Navbar.module.css';
-import { faGear, faCircleUser, faGift, faMagnifyingGlass, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faCircleUser, faGift, faMagnifyingGlass, faRightFromBracket, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Recursos from "../classes/Recursos";
 import Fetch from "../classes/Fetch";
@@ -22,6 +22,9 @@ function Navbar() {
             <div className={style.links}>
                 <div>
                     <a href="/escritorio"><FontAwesomeIcon icon={faMagnifyingGlass} /> Pesquisar</a>
+                </div>
+                <div>
+                    <a href="/escritorio/novo-parceiro"><FontAwesomeIcon icon={faUserPlus} /> Novo parceiro</a>
                 </div>
                 <div>
                     <a href="/escritorio/configuracoes"><FontAwesomeIcon icon={faGear} /> Configurações</a>

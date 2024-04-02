@@ -30,7 +30,6 @@ function UsersPage() {
 
     return (
         <>
-            <Navbar />
             <div>
                 <div>
                     <h1 className={style.titulo}>Usuários</h1>

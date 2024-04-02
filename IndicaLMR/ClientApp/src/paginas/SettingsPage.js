@@ -34,7 +34,6 @@ function SettingsPage() {
 
     return (
         <>
-            <Navbar />
             <h1 className={style.titulo}>Configurações</h1>
             <div className={style.configuracoes}>
                 {configuracoes && configuracoes.length > 0 ?

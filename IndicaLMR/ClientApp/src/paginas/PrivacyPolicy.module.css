@@ -1,0 +1,19 @@
+﻿div.politica{
+    padding: 15px 20px;
+    text-align: justify;
+    color: white;
+    font-size: 17px;
+}
+
+div.politica h1, div.politica h2, div.politica h3 {
+    text-decoration: underline;
+    margin-bottom: 15px;
+}
+
+div.politica a {
+    color: white !important;
+}
+
+div.politica .logolmr > * {
+    fill: white;
+}

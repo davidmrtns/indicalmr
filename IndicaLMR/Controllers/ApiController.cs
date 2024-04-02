@@ -19,6 +19,7 @@ namespace IndicaLMR.Controllers
             _asaas = asaas;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("inserir-parceiro")]
         public IActionResult InserirParceiro([FromBody] ParceiroModel parceiroModel)
         {
@@ -29,8 +30,7 @@ namespace IndicaLMR.Controllers
                     try
                     {
                         Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, parceiroModel.senha);
-                        parceiro.CadastrarParceiro();
-                        return Ok(parceiro);
+                        return Ok(parceiro.CadastrarParceiro());
                     }
                     catch
                     {

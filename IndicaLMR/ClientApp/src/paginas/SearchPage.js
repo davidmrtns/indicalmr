@@ -7,7 +7,6 @@ import ItemParceiro from "../components/ItemParceiro";
 import { faMagnifyingGlass, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DadosParceiro from "../components/DadosParceiro";
-import Navbar from "../components/Navbar";
 
 function SearchPage() {
     var fetch = new Fetch();
@@ -64,7 +63,6 @@ function SearchPage() {
 
     return (
         <>
-            <Navbar />
             <div className={style.container}>
                 <div className={style.caixapesquisa}>
                     <div className={style.pesquisa}>

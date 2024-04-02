@@ -136,6 +136,28 @@
         }).then(() => { window.location.href = "/escritorio" });
     }
 
+    async criarParceiro(nome, celular, cpf, senha) {
+        var resposta;
+
+        try {
+            await fetch('api/inserir-parceiro', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    telefone: celular,
+                    cpf: cpf,
+                    senha: senha
+                })
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
     async criarTransacao(parceiro, valor, tipo, premio) {
         var resposta;
 

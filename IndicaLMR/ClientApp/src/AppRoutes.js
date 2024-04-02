@@ -9,6 +9,8 @@ import EditarDados from "./components/EditarDados";
 import SettingsPage from "./paginas/SettingsPage";
 import GiftsPage from "./paginas/GiftsPage";
 import UsersPage from "./paginas/UsersPage";
+import PrivacyPolicyPage from "./paginas/PrivacyPolicyPage";
+import NewPartnerPage from "./paginas/NewPartnerPage";
 
 const AppRoutes = () => {
     return (
@@ -18,8 +20,10 @@ const AppRoutes = () => {
                 <Route path="editar-dados" element={<EditarDados />} />
             </Route>
             <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="politica-de-privacidade" element={<PrivacyPolicyPage />} />
             <Route path="/escritorio" element={<PrivateRouteEscritorio />}>
                 <Route path="" element={<SearchPage />} />
+                <Route path="novo-parceiro" element={<NewPartnerPage />} />
                 <Route path="configuracoes" element={<SettingsPage />} />
                 <Route path="premios" element={<GiftsPage />} />
                 <Route path="usuarios" element={<UsersPage />} />
