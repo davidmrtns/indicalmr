@@ -75,6 +75,11 @@ button.salvardados {
     color: white;
 }
 
+button.excluir {
+    background: #d80115 !important;
+    color: white;
+}
+
 .mensagem {
     text-align: center;
     color: white;

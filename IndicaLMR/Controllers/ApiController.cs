@@ -277,6 +277,20 @@ namespace IndicaLMR.Controllers
             }
         }
 
+        [HttpDelete("excluir-conta")]
+        public IActionResult ExcluirConta()
+        {
+            try
+            {
+                Parceiro parceiro = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser"));
+                return Ok(parceiro.DesativarParceiro());
+            }
+            catch
+            {
+                return BadRequest(false);
+            }
+        }
+
         [HttpGet("listar-premios-disponiveis")]
         public IActionResult ListarPremiosDisponiveis()
         {

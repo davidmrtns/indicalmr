@@ -14,6 +14,12 @@ function Login() {
     const [cpfDigitado, setCpfDigitado] = useState(false);
     const [exibirSenha, setExibirSenha] = useState(false);
 
+    function enviar(e) {
+        if (e.keyCode === 13) {
+            enviarSolicitacao();
+        }
+    }
+
     async function enviarSolicitacao() {
         setEnviado(true);
 
@@ -46,7 +52,7 @@ function Login() {
                             <InputMask name="cpf" mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={() => setCpfDigitado(false)} />
                         </div>
                         <div className={style.campo}>
-                            <input name="senha" placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} />
+                            <input name="senha" placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} onKeyDown={(e) => enviar(e)} />
                             <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
                         </div>
                         <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>

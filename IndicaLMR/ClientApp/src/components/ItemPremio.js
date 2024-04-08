@@ -85,7 +85,7 @@ function ItemPremio({ adicionar, premio, atualizar }) {
                             <input id="nome" placeholder="Nome do prêmio" type="text" />
                         </div>
                         <div>
-                            <input id="valor" placeholder="Valor do prêmio" type="number" />
+                            <input id="valor" placeholder="Valor do prêmio (pontos)" type="number" />
                         </div>
                         <div>
                             <select id="disponibilidade">

@@ -5,10 +5,12 @@ import InputMask from "react-input-mask";
 import Utils from "../classes/Utils";
 import { faPencil, faTrash, faCheck, faFloppyDisk, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ModalConfirmacao from './ModalConfirmacao';
 
 function EditarDados({ id }) {
     const fetch = new Fetch();
     const utils = new Utils();
+    const [exibirModal, setExibirModal] = useState(false);
     const [mensagem, setMensagem] = useState(false);
     const [parceiro, setParceiro] = useState(null);
     const [editarNome, setEditarNome] = useState(false);
@@ -61,6 +63,20 @@ function EditarDados({ id }) {
     function confirmarSenha() {
         confirmacao === senha ? setValSenha({ ...valSenha, confirmacao: true }) : setValSenha({ ...valSenha, confirmacao: false });
     }
+
+    const excluir = async () => {
+        var resposta = await fetch.excluirConta();
+
+        if (resposta) {
+            return { ok: true, sucesso: true, mensagem: "Sua conta foi excluída" };
+        } else {
+            return { ok: true, sucesso: false, mensagem: "Ocorreu um erro ao excluir a sua conta" };
+        }
+    }
+
+    const desconectar = () => {
+        fetch.desconectar();
+    };
 
     async function editar() {
         var nome = document.getElementById("nome").value;
@@ -139,10 +155,19 @@ function EditarDados({ id }) {
                         <div className={style.botoes}>
                             <button onClick={() => voltar()}>Voltar</button>
                             <button className={style.salvardados} onClick={() => editar()}><FontAwesomeIcon icon={faFloppyDisk} /> Salvar</button>
+                            <button className={style.excluir} onClick={() => setExibirModal(true)}><FontAwesomeIcon icon={faTrash} /> Excluir conta</button>
                         </div>
                     </div>
                 </div>
             : ""}
+            <ModalConfirmacao
+                acao={excluir}
+                onHide={() => setExibirModal(false)}
+                show={exibirModal}
+                titulo="Excluir conta"
+                mensagemConfirmacao="Você tem certeza de que quer excluir sua conta? O seu saldo de crédito será zerado e você não poderá entrar na conta novamente"
+                tituloBotao="Excluir mesmo assim"
+                acaoPosterior={desconectar} />
         </>
     );
 }

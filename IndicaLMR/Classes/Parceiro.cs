@@ -580,7 +580,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT * FROM parceiro WHERE cpf = @cpf", con);
+                MySqlCommand query = new MySqlCommand("SELECT * FROM parceiro WHERE cpf = @cpf AND login = true", con);
                 query.Parameters.AddWithValue("@cpf", cpf);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -681,6 +681,28 @@ namespace IndicaLMR.Classes
             catch
             {
                 return null;
+            }
+        }
+
+        public bool DesativarParceiro()
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET nome = '[USUÁRIO DESCONHECIDO]', credito = 0, senha = null, login = false WHERE id = @id", con);
+                query.Parameters.AddWithValue("@id", Id);
+
+                query.ExecuteNonQuery();
+
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

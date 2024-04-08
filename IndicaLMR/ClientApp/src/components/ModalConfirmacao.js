@@ -20,9 +20,13 @@ function ModalConfirmacao({ acao, onHide, show, titulo, mensagemConfirmacao, tit
     }
 
     function fechar() {
+        cancelar();
+        acaoPosterior();
+    }
+
+    function cancelar() {
         onHide();
         resetar();
-        acaoPosterior();
     }
 
     function resetar() {
@@ -54,7 +58,7 @@ function ModalConfirmacao({ acao, onHide, show, titulo, mensagemConfirmacao, tit
                     <>
                         <Button onClick={() => fechar()}>Fechar</Button>
                     </> : <>
-                        <Button onClick={() => fechar()}>Cancelar</Button>
+                        <Button onClick={() => cancelar()}>Cancelar</Button>
                         <Button className={style.btexcluir} onClick={() => executarAcao()}>{tituloBotao}</Button>
                     </>
                 }

@@ -384,6 +384,22 @@
         return resposta;
     }
 
+    async excluirConta() {
+        var resposta;
+
+        try {
+            await fetch('api/excluir-conta', {
+                method: 'delete',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null
+        }
+        return resposta;
+    }
+
     async listarConfiguracoes() {
         var resposta;
 
