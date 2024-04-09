@@ -83,7 +83,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha)", con);
+                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login)", con);
                 query.Parameters.AddWithValue("@id", Id);
                 query.Parameters.AddWithValue("@nome", Nome);
                 query.Parameters.AddWithValue("@telefone", Telefone);
@@ -91,6 +91,7 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@credito", Credito);
                 query.Parameters.AddWithValue("@fechou", Fechou);
                 query.Parameters.AddWithValue("@senha", senhaHash);
+                query.Parameters.AddWithValue("@login", true);
 
                 query.ExecuteNonQuery();
                 con.Close();
@@ -111,7 +112,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha)", con);
+                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login)", con);
                 query.Parameters.AddWithValue("@id", Id);
                 query.Parameters.AddWithValue("@nome", Nome);
                 query.Parameters.AddWithValue("@telefone", Telefone);
@@ -119,6 +120,7 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@credito", Credito);
                 query.Parameters.AddWithValue("@fechou", Fechou);
                 query.Parameters.AddWithValue("@senha", null);
+                query.Parameters.AddWithValue("@login", true);
 
                 query.ExecuteNonQuery();
                 long id = query.LastInsertedId;
@@ -692,8 +694,12 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET nome = '[USUÁRIO DESCONHECIDO]', credito = 0, senha = null, login = false WHERE id = @id", con);
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET nome = @nome, credito = @credito, senha = @senha, login = @login WHERE id = @id", con);
                 query.Parameters.AddWithValue("@id", Id);
+                query.Parameters.AddWithValue("@nome", "[USUÁRIO DESCONHECIDO]");
+                query.Parameters.AddWithValue("@credito", 0);
+                query.Parameters.AddWithValue("@senha", null);
+                query.Parameters.AddWithValue("@login", false);
 
                 query.ExecuteNonQuery();
 
