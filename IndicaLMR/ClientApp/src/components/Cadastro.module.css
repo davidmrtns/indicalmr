@@ -2,6 +2,19 @@
     background: #00643c;
 }
 
+div.opcoescadastro{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+div.opcoescadastro button{
+    margin: 0;
+    width: 300px;
+}
+
 div.cadastro {
     min-height: 100vh;
     display: flex;

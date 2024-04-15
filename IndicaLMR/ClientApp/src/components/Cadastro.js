@@ -1,11 +1,10 @@
-import React, { Component, useState, useEffect } from "react";
-import { Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import Recursos from "../classes/Recursos";
 import style from "./Cadastro.module.css";
 import Fetch from "../classes/Fetch";
 import Utils from "../classes/Utils";
 import InputMask from "react-input-mask";
-import { faCircleCheck, faCircleXmark,  } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Login() {
@@ -14,9 +13,15 @@ function Login() {
     const utils = new Utils();
     const LMRLogo = recursos.getLMRLogo();
 
+    const [statusCadastro, setStatusCadastro] = useState({
+        exibir: false,
+        cadastroCliente: false,
+        cadastroIndicado: false
+    });
+    const [exibirCadastroCliente, setExibirCadastroCliente] = useState(false);
     const [enviado, setEnviado] = useState(null);
     const [possuiCadastro, setPossuiCadastro] = useState(false);
-    const [mensagem, setMensagem] = useState(false);
+    const [mensagem, setMensagem] = useState(null);
     const [idUsuario, setIdUsuario] = useState(null);
     const [cpf, setCpf] = useState(null);
     const [senha, setSenha] = useState(null);
@@ -68,6 +73,15 @@ function Login() {
         });
     }
 
+    function voltar() {
+        setStatusCadastro({
+            exibir: false,
+            cadastroCliente: false,
+            cadastroIndicado: false
+        });
+        setMensagem(null);
+    }
+
     function validarCpf() {
         setValCpf(utils.validarCpf(cpf));
     }
@@ -78,28 +92,66 @@ function Login() {
 
     async function checarNovoParceiro() {
         setEnviado(true);
-        var celular = document.getElementById("celular").value.replace(/[()\-_ ]/g, '');
 
-        if (celular === '' || celular.length < 11) {
-            setMensagem('Digite um celular válido');
-        } else {
-            var response = await fetch.verificarNovoParceiro(celular);
+        if (statusCadastro.cadastroIndicado) {
+            var celular = document.getElementById("celular").value.replace(/[()\-_ ]/g, '');
 
-            if (response != null) {
-                var status = response.clone().status;
+            if (celular === '' || celular.length < 11) {
+                setMensagem('Digite um celular válido');
+            } else {
+                var response = await fetch.verificarNovoParceiro(celular);
 
-                if (status === 200) {
-                    var resposta = await response.clone().json();
+                if (response != null) {
+                    var status = response.clone().status;
 
-                    if (resposta.novoParceiro === true) {
-                        setIdUsuario(resposta.id)
+                    if (status === 200) {
+                        var resposta = await response.clone().json();
+
+                        if (resposta.novoParceiro === true) {
+                            setIdUsuario(resposta.id)
+                        } else {
+                            setMensagem("Você já possui cadastro. Clique no botão abaixo para entrar com seu CPF e senha");
+                            setPossuiCadastro(true);
+                        }
                     } else {
-                        setMensagem("Você já possui cadastro. Clique no botão abaixo para entrar com seu CPF e senha");
-                        setPossuiCadastro(true);
+                        setMensagem("Opa, parece que você não foi indicado por ninguém ainda");
                     }
-                } else {
-                    setMensagem("Opa, parece que você não foi indicado por ninguém ainda");
                 }
+            }
+        } else {
+            if (cpf !== null) {
+                var cpfFormatado = cpf.replace(/[.\-_]/g, '');
+
+                if (cpfFormatado === '' || cpfFormatado.length < 11) {
+                    setMensagem("Digite um CPF válido");
+                } else {
+                    var response = await fetch.verificarNovoParceiroCliente(cpfFormatado);
+
+                    if (response != null) {
+                        var status = response.clone().status;
+
+                        if (status === 200) {
+                            var resposta = await response.clone().json();
+
+                            if (resposta === true) {
+                                var id = await fetch.verificarParceiroIndica(cpfFormatado);
+
+                                if (id !== 0) {
+                                    setMensagem("Você já possui cadastro. Clique no botão abaixo para entrar com seu CPF e senha");
+                                    setPossuiCadastro(true);
+                                } else {
+                                    setExibirCadastroCliente(true);
+                                }
+                            } else {
+                                setMensagem("Não encontramos seu CPF em nossa base de dados. Entre em contato com o escritório")
+                            }
+                        } else {
+                            setMensagem("Opa, um erro ocorreu. Tente novamente");
+                        }
+                    }
+                }
+            } else {
+                setMensagem("Digite um CPF válido");
             }
         }
         setEnviado(false);
@@ -109,7 +161,13 @@ function Login() {
         setEnviado(true);
 
         if (valCpf === true && valSenha.confirmacao === true) {
-            var resultado = await fetch.atualizarDadosParceiro(idUsuario, cpf.replace(/[.\-_]/g, ''), senha);
+            var resultado;
+
+            if (statusCadastro.cadastroIndicado) {
+                resultado = await fetch.atualizarDadosParceiro(idUsuario, cpf.replace(/[.\-_]/g, ''), senha);
+            } else {
+                resultado = await fetch.cadastrarParceiro(document.getElementById('nome').value, document.getElementById('celular').value.replace(/[()\-_ ]/g, ''), cpf.replace(/[.\-_]/g, ''), senha);
+            }
 
             if (resultado.status === 200) {
                 window.location.href = "/";
@@ -118,7 +176,7 @@ function Login() {
                 setEnviado(false);
             }
         } else {
-            alert('Digite um CPF e senha válidos!');
+            alert('Preencha os campos corretamente!');
             setEnviado(false);
         }
     }
@@ -129,57 +187,111 @@ function Login() {
                 <LMRLogo className={style.logolmr} />
                 <div className={style.formulario}>
                     <h1>Cadastro</h1>
-                    <div className={style.campo}>
-                        <InputMask mask="(99) 99999-9999" placeholder="Celular" id="celular" type="tel" onChange={() => ocultar()} />
-                    </div>
-                    {idUsuario ?
+                    {statusCadastro.exibir ?
                         <>
-                            <div className={style.campo}>
-                                <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={(e) => setCpf(e.target.value)} />
-                                {cpf ?
-                                    <div className={style.requisitos}>
-                                        {valCpf === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> CPF válido</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> CPF inválido</p>}
+                            {statusCadastro.cadastroIndicado ?
+                                <>
+                                    <div className={style.campo}>
+                                        <InputMask mask="(99) 99999-9999" placeholder="Celular" id="celular" type="tel" onChange={() => ocultar()} />
                                     </div>
-                                : ""}
-                            </div>
-                            <div className={style.campo}>
-                                <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />
-                                {senha ?
-                                    <div className={style.requisitos}>
-                                        <h5>Sua senha deve conter:</h5>
-                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
-                                        <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
-                                        <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
-                                        <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
-                                        <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                    {idUsuario ?
+                                        <>
+                                            <div className={style.campo}>
+                                                <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={(e) => setCpf(e.target.value)} />
+                                                {cpf ?
+                                                    <div className={style.requisitos}>
+                                                        {valCpf === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> CPF válido</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> CPF inválido</p>}
+                                                    </div>
+                                                : ""}
+                                            </div>
+                                            <div className={style.campo}>
+                                                <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />
+                                                {senha ?
+                                                    <div className={style.requisitos}>
+                                                        <h5>Sua senha deve conter:</h5>
+                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
+                                                        <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
+                                                        <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
+                                                        <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
+                                                        <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                                    </div>
+                                                : ""}
+                                            </div>
+                                            <div className={style.campo}>
+                                                <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
+                                                {senha && valSenha.confirmacao !== null ?
+                                                    <div className={style.requisitos}>
+                                                        {valSenha.confirmacao === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> As senhas são iguais</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> As senhas devem ser iguais</p>}
+                                                    </div>
+                                                : ""}
+                                            </div>
+                                        </>
+                                    : ""}
+                                </>
+                            :
+                                <>
+                                    <div className={style.campo}>
+                                        <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={(e) => setCpf(e.target.value)} />
                                     </div>
-                                : ""}
-                            </div>
-                            <div className={style.campo}>
-                                <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
-                                {senha && valSenha.confirmacao !== null ?
-                                    <div className={style.requisitos}>
-                                        {valSenha.confirmacao === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> As senhas são iguais</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> As senhas devem ser iguais</p>}
-                                    </div>
-                                : ""}
+                                    {exibirCadastroCliente ?
+                                        <>
+                                            <div className={style.campo}>
+                                                <input placeholder="Nome" id="nome" type="text" />
+                                            </div>
+                                            <div className={style.campo}>
+                                                <InputMask mask="(99) 99999-9999" placeholder="Celular" id="celular" type="tel" />
+                                            </div>
+                                            <div className={style.campo}>
+                                                <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />
+                                                {senha ?
+                                                    <div className={style.requisitos}>
+                                                        <h5>Sua senha deve conter:</h5>
+                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
+                                                        <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
+                                                        <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
+                                                        <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
+                                                        <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                                    </div>
+                                                : ""}
+                                            </div>
+                                            <div className={style.campo}>
+                                                <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
+                                                {senha && valSenha.confirmacao !== null ?
+                                                    <div className={style.requisitos}>
+                                                        {valSenha.confirmacao === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> As senhas são iguais</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> As senhas devem ser iguais</p>}
+                                                    </div>
+                                                : ""}
+                                            </div>
+                                        </>
+                                    : ""}
+                                </>
+                            }
+                            {mensagem ? <p className={style.mensagem}>{mensagem}</p> : ""}
+                            <div className={style.botao}>
+                                {idUsuario || exibirCadastroCliente ?
+                                    <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
+                                        {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
+                                            : "Cadastrar"}
+                                    </button>
+                                    : possuiCadastro ?
+                                        <button className={enviado ? style.enviado : ""} onClick={() => window.location.href = "/"}>
+                                            {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
+                                                : "Entrar"}</button> :
+                                        <div className={style.opcoescadastro}>
+                                            <button onClick={() => voltar()}>Voltar</button>
+                                            <button className={enviado ? style.enviado : ""} onClick={() => checarNovoParceiro()}>
+                                                {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
+                                                    : "Próximo"}</button>
+                                        </div>
+                                    }
                             </div>
                         </>
-                        : ""}
-                    {mensagem ? <p className={style.mensagem}>{mensagem}</p> : ""}
-                    <div className={style.botao}>
-                        {idUsuario ?
-                            <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
-                                {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
-                                    : "Entrar"}
-                            </button>
-                            : possuiCadastro ?
-                                <button className={enviado ? style.enviado : ""} onClick={() => window.location.href = "/"}>
-                                {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
-                                : "Entrar"}</button> :
-                             <button className={enviado ? style.enviado : ""} onClick={() => checarNovoParceiro()}>
-                             {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
-                             : "Próximo"}</button>}
-                    </div>
+                    :
+                        <div className={style.opcoescadastro}>
+                            <button onClick={() => setStatusCadastro({exibir: true, cadastroCliente: true, cadastroIndicado:false})}>Sou cliente da LMR</button>
+                            <button onClick={() => setStatusCadastro({ exibir: true, cadastroIndicado: true, cadastroCliente:false })}>Fui indicado</button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

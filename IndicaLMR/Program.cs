@@ -58,6 +58,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddHttpClient<Asaas>();
+builder.Services.AddHttpClient<Vios>();
 
 var app = builder.Build();
 

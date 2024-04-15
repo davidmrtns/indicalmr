@@ -9,6 +9,7 @@
         public static string Audience { get { return _configuration["AUDIENCE"]; } }
         public static string SecurityKey { get { return _configuration["SECURITY_KEY"]; } }
         public static string TokenAsaas { get { return _configuration["TOKEN_ASAAS"]; } }
+        public static string TokenVios { get { return _configuration["TOKEN_VIOS"]; } }
 
         static Conexao()
         {

@@ -10,6 +10,13 @@ namespace IndicaLMR.Controllers
     [Route("[controller]")]
     public class AuthController : Controller
     {
+        private readonly Vios _vios;
+
+        public AuthController(Vios vios)
+        {
+            _vios = vios;
+        }
+
         [HttpPost("autenticar")]
         public IActionResult Autenticar([FromBody] ParceiroModel parceiroModel)
         {
@@ -36,6 +43,49 @@ namespace IndicaLMR.Controllers
             }
         }
 
+        [HttpPost("novo-parceiro")]
+        public async Task<IActionResult> CadastrarParceiro([FromBody] ParceiroModel parceiroModel)
+        {
+            try
+            {
+                bool resultado = await _vios.VerificarCadastro(parceiroModel.cpf!);
+                if (resultado)
+                {
+                    if (parceiroModel.telefone.Length == 11 && parceiroModel.telefone.All(char.IsDigit))
+                    {
+                        if (parceiroModel.cpf.Length == 11 && parceiroModel.cpf.All(char.IsDigit))
+                        {
+                            try
+                            {
+                                Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, parceiroModel.senha);
+                                return Ok(parceiro.CadastrarParceiro());
+                            }
+                            catch
+                            {
+                                return BadRequest();
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest("O CPF deve possuir apenas números e conter 11 dígitos");
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("O telefone deve possuir apenas números e conter 11 dígitos");
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpGet("novo-parceiro/{telefone}")]
         public IActionResult VerificarNovoParceiro(string telefone)
         {
@@ -48,6 +98,34 @@ namespace IndicaLMR.Controllers
             else
             {
                 return NoContent();
+            }
+        }
+
+        [HttpGet("novo-parceiro/cliente/{cpf}")]
+        public async Task<IActionResult> VerificarNovoParceiroCliente(string cpf)
+        {
+            try
+            {
+                bool resultado = await _vios.VerificarCadastro(cpf);
+                return Ok(resultado);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("parceiro-existente/{cpf}")]
+        public IActionResult VerificarParceiroIndica(string cpf)
+        {
+            try
+            {
+                int resultado = Parceiro.VerificarParceiro(cpf);
+                return Ok(resultado);
+            }
+            catch
+            {
+                return BadRequest(0);
             }
         }
 

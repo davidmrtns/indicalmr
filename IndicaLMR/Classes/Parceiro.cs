@@ -135,6 +135,37 @@ namespace IndicaLMR.Classes
             }
         }
 
+        public static int VerificarParceiro(string cpf)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+            int id = 0;
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("SELECT id FROM parceiro WHERE cpf = @cpf", con);
+                query.Parameters.AddWithValue("@cpf", cpf);
+
+                MySqlDataReader leitor = query.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        id = (int)leitor["id"];
+                    }
+                }
+
+                con.Close();
+            }
+            catch
+            {
+                id = 0;
+            }
+            return id;
+        }
+
         public static Parceiro BuscarParceiro(string cpf)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);

@@ -80,6 +80,38 @@
         return response;
     }
 
+    async verificarNovoParceiroCliente(cpf) {
+        var response;
+
+        try {
+            response = await fetch('auth/novo-parceiro/cliente/' + cpf, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch {
+            response = null;
+        }
+        return response;
+    }
+
+    async verificarParceiroIndica(cpf) {
+        var resposta;
+
+        try {
+            await fetch('auth/parceiro-existente/' + cpf, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
     async atualizarDadosParceiro(id, cpf, senha) {
         var response;
 
@@ -134,6 +166,29 @@
                 'Content-Type': 'application/json'
             }
         }).then(() => { window.location.href = "/escritorio" });
+    }
+
+    async cadastrarParceiro(nome, celular, cpf, senha) {
+        var response;
+
+        try {
+            response = await fetch('auth/novo-parceiro', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    telefone: celular,
+                    cpf: cpf,
+                    senha: senha
+                })
+            });
+        } catch (e) {
+            alert(e);
+            response = null;
+        }
+        return response;
     }
 
     async criarParceiro(nome, celular, cpf, senha) {
