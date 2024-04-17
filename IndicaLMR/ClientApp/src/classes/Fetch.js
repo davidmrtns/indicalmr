@@ -191,7 +191,7 @@
         return response;
     }
 
-    async criarParceiro(nome, celular, cpf, senha) {
+    async criarParceiro(nome, celular, cpf, tipo, senha) {
         var resposta;
 
         try {
@@ -204,6 +204,7 @@
                     nome: nome,
                     telefone: celular,
                     cpf: cpf,
+                    tipo: tipo,
                     senha: senha
                 })
             }).then((response) => response.json()).then((data) => { resposta = data });
@@ -290,11 +291,91 @@
         return resposta;
     }
 
+    async contarIndicacoes() {
+        var resposta;
+
+        try {
+            await fetch('api/contar-indicacoes', {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async contarIndicacoesFechadas() {
+        var resposta;
+
+        try {
+            await fetch('api/contar-indicacoes-fechadas', {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async contarIndicacoesId(id) {
+        var resposta;
+
+        try {
+            await fetch('api/contar-indicacoes-id/' + id, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async contarIndicacoesFechadasId(id) {
+        var resposta;
+
+        try {
+            await fetch('api/contar-indicacoes-fechadas-id/' + id, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
     async listarIndicacoes(pagina) {
         var resposta;
 
         try {
             await fetch('api/listar-indicacoes/?pagina=' + pagina + "&tamanhoPagina=5", {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async listarIndicacoesPorId(id, pagina) {
+        var resposta;
+
+        try {
+            await fetch('api/listar-indicacoes-id/' + id + '?pagina=' + pagina + "&tamanhoPagina=5", {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'
@@ -354,11 +435,11 @@
         return resposta;
     }
 
-    async listarParceiros(nome, cpf, pagina, tamPagina) {
+    async listarParceiros(nome, cpf, tipo, pagina, tamPagina) {
         var resposta;
 
         try {
-            await fetch('api/listar-parceiros/?nome=' + nome + '&cpf=' + cpf + '&pagina=' + pagina + '&tamanhoPagina=' + tamPagina, {
+            await fetch('api/listar-parceiros/?nome=' + nome + '&cpf=' + cpf + '&tipo=' + tipo + '&pagina=' + pagina + '&tamanhoPagina=' + tamPagina, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'
@@ -375,6 +456,22 @@
 
         try {
             await fetch('api/mudar-status-transacao/' + id, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async mudarStatusRepasse(id) {
+        var resposta;
+
+        try {
+            await fetch('api/mudar-status-repasse/' + id, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

@@ -25,6 +25,10 @@ function HomePage() {
     const [modalAbaterShow, setModalAbaterShow] = useState(false);
     const [modalIndicarShow, setModalIndicarShow] = useState(false);
     const [acoesConta, setAcoesConta] = useState(false);
+    const [qtdIndicacoes, setQtdIndicacoes] = useState({
+        total: 0,
+        fechadas: 0
+    })
 
     function editarDados() {
         window.location.href = "/editar-dados";
@@ -37,6 +41,13 @@ function HomePage() {
         }
     }
 
+    const atualizarQtdIndicacoes = async () => {
+        setQtdIndicacoes({
+            total: await fetch.contarIndicacoes(),
+            fechadas: await fetch.contarIndicacoesFechadas()
+        });
+    }
+
     useEffect(() => {
         const body = document.querySelector('body');
         body.classList.add(style.bodybg);
@@ -46,6 +57,10 @@ function HomePage() {
         const buscarDados = async () => {
             var dados = await fetch.buscarUsuario();
             setUsuario(dados);
+
+            if (dados.Tipo === 1) {
+                atualizarQtdIndicacoes();
+            }
         }
 
         buscarDados();
@@ -66,14 +81,29 @@ function HomePage() {
                 <h1>Olá, {usuario ? usuario.Nome : ""}</h1>
             </div>
             <div className={style.saldo}>
-                <div className={style.exibir}>
-                    <h1>Saldo de indicação</h1>
-                    <p className={style.exibir} onClick={() => setExibir(!exibir)}>{exibir ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}</p>
-                </div>
-                <div>
-                    <p>R$</p>
-                    <p id="valor">{usuario ? exibir ? usuario.Credito + ",00" : "***" : ""} {exibir ? <FontAwesomeIcon icon={faArrowsRotate} className={style.atualizarcredito} onClick={() => atualizarCredito()} /> : ""}</p>
-                </div>
+                {usuario ? usuario.Tipo === 0 ?
+                    <>
+                        <div className={style.exibir}>
+                            <h1>Saldo de indicação</h1>
+                            <p className={style.exibir} onClick={() => setExibir(!exibir)}>{exibir ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}</p>
+                        </div>
+                        <div>
+                            <p>R$</p>
+                            <p id="valor">{usuario ? exibir ? usuario.Credito + ",00" : "***" : ""} {exibir ? <FontAwesomeIcon icon={faArrowsRotate} className={style.atualizarcredito} onClick={() => atualizarCredito()} /> : ""}</p>
+                        </div>
+                    </>
+                    : usuario.Tipo === 1 ?
+                        <>
+                            <div className={style.exibir}>
+                                <h1>Suas indicações</h1>
+                                <p className={style.exibir} onClick={() => atualizarQtdIndicacoes()}><FontAwesomeIcon icon={faArrowsRotate} /></p>
+                            </div>
+                            <div>
+                                <p>{qtdIndicacoes.fechadas}</p><span>fecharam</span>
+                                <p>{qtdIndicacoes.total}</p><span>totais</span>
+                            </div>
+                        </>
+                    : "" : ""}
             </div>
             <div className={style.servicos}>
                 <div>
@@ -82,41 +112,49 @@ function HomePage() {
                     </div>
                     <p>Indicar</p>
                 </div>
-                <div>
-                    <div id={style["resgatar"]} className={style.servico} onClick={() => setModalResgatarShow(true)}>
-                        <img className={style.icone} src={recursos.getResgatar()} />
+                {usuario ? usuario.Tipo === 0 ?
+                    <div>
+                        <div id={style["resgatar"]} className={style.servico} onClick={() => setModalResgatarShow(true)}>
+                            <img className={style.icone} src={recursos.getResgatar()} />
+                        </div>
+                        <p>Resgatar</p>
                     </div>
-                    <p>Resgatar</p>
-                </div>
-                <div>
-                    <div id={style["abater"]} className={style.servico} onClick={() => setModalAbaterShow(true)}>
-                        <img className={style.icone} src={recursos.getAbater()} />
+                : "" : ""}
+                {usuario ? usuario.Tipo === 0 ?
+                    <div>
+                        <div id={style["abater"]} className={style.servico} onClick={() => setModalAbaterShow(true)}>
+                            <img className={style.icone} src={recursos.getAbater()} />
+                        </div>
+                        <p>Abater</p>
                     </div>
-                    <p>Abater</p>
-                </div>
+                : "" : ""}
             </div>
             <div className={style.listas}>
-                <ListaIndicacoes />
-                <ListaTransacoes />
-                <ListaCobrancas />
+                <ListaIndicacoes usuario={usuario} />
+                {usuario ? usuario.Tipo == 0 ? <ListaTransacoes /> : "" : ""}
+                {usuario ? usuario.Tipo === 0 ? <ListaCobrancas /> : "" : ""}
             </div>
             {usuario ?
                 <>
-                    <ModalResgatar
-                        show={modalResgatarShow}
-                        onHide={() => setModalResgatarShow(false)}
-                        usuario={usuario.Id}
-                        saldo={usuario.Credito}
-                        resgate={true}
-                        atualizar={() => setAtualizar(!atualizar)}
-                    />
-                    <ModalAbater
-                        show={modalAbaterShow}
-                        onHide={() => setModalAbaterShow(false)}
-                        usuario={usuario.Id}
-                        saldo={usuario.Credito}
-                        atualizar={() => setAtualizar(!atualizar)}
-                    />
+                    {usuario.Tipo === 0 ?
+                        <ModalResgatar
+                            show={modalResgatarShow}
+                            onHide={() => setModalResgatarShow(false)}
+                            usuario={usuario.Id}
+                            saldo={usuario.Credito}
+                            resgate={true}
+                            atualizar={() => setAtualizar(!atualizar)}
+                        />
+                    : ""}
+                    {usuario.Tipo === 0 ?
+                        <ModalAbater
+                            show={modalAbaterShow}
+                            onHide={() => setModalAbaterShow(false)}
+                            usuario={usuario.Id}
+                            saldo={usuario.Credito}
+                            atualizar={() => setAtualizar(!atualizar)}
+                        />
+                    : ""}
                     <ModalIndicar
                         show={modalIndicarShow}
                         onHide={() => setModalIndicarShow(false)}

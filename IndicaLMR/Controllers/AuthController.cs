@@ -57,7 +57,7 @@ namespace IndicaLMR.Controllers
                         {
                             try
                             {
-                                Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, parceiroModel.senha);
+                                Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, 0, parceiroModel.senha);
                                 return Ok(parceiro.CadastrarParceiro());
                             }
                             catch

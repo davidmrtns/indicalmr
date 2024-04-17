@@ -72,10 +72,11 @@ function NewPartnerPage() {
     async function enviarSolicitacao() {
         setEnviado(true);
         var nome = document.getElementById('nome').value;
-        var celular = document.getElementById('celular').value.replace(/[()\-_ ]/g, '')
+        var celular = document.getElementById('celular').value.replace(/[()\-_ ]/g, '');
+        var tipo = document.getElementById('tipo').value;
 
         if (nome && celular && valCpf === true && valSenha.confirmacao === true) {
-            var resultado = await fetch.criarParceiro(nome, celular, cpf.replace(/[.\-_]/g, ''), senha);
+            var resultado = await fetch.criarParceiro(nome, celular, cpf.replace(/[.\-_]/g, ''), tipo, senha);
 
             if (resultado === true) {
                 alert('Parceiro criado');
@@ -107,6 +108,12 @@ function NewPartnerPage() {
                             {valCpf === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> CPF válido</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> CPF inválido</p>}
                         </div>
                         : ""}
+                </div>
+                <div className={style.campo}>
+                    <select id="tipo">
+                        <option value="1">Parceiro</option>
+                        <option value="0">Indicador</option>
+                    </select>
                 </div>
                 <div className={style.campo}>
                     <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />

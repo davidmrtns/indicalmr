@@ -38,10 +38,11 @@ function SearchPage() {
         var nome = document.getElementById("nome").value.replace(/\s+/g, " ").trim().toUpperCase();
         var cpf = document.getElementById("cpf").value.replace(/[.\-_]/g, '');
         var tipo = modoPesquisa.transacao === true ? (document.getElementById("tipo").value === '-' ? '' : document.getElementById("tipo").value) : "";
+        var tipoParceiro = modoPesquisa.parceiro === true ? (document.getElementById("tipoParceiro").value === '-' ? '' : document.getElementById("tipoParceiro").value) : "";
         var baixa = modoPesquisa.transacao === true ? (document.getElementById("baixa").value == 0 ? 'false' : document.getElementById("baixa").value == 1 ? 'true' : '') : "";
         var tamanho = document.getElementById("tamPagina").value;
 
-        var itens = modoPesquisa.transacao === true ? await fetch.listarTransacoesFiltro(pagina, tamanho, tipo, baixa, nome, cpf) : await fetch.listarParceiros(nome, cpf, pagina, tamanho);
+        var itens = modoPesquisa.transacao === true ? await fetch.listarTransacoesFiltro(pagina, tamanho, tipo, baixa, nome, cpf) : await fetch.listarParceiros(nome, cpf, tipoParceiro, pagina, tamanho);
         setTamPagina(tamanho)
         setLista(itens);
     }
@@ -80,6 +81,15 @@ function SearchPage() {
                         <div>
                             <InputMask mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" />
                         </div>
+                        {modoPesquisa.parceiro === true ?
+                           <div>
+                                <select id="tipoParceiro">
+                                    <option selected value="-">Todos</option>
+                                    <option value="0">Indicador</option>
+                                    <option value="1">Parceiro</option>
+                                </select>
+                           </div>
+                        : ""}
                         {modoPesquisa.transacao === true ?
                             <div>
                                 <select id="tipo">
@@ -106,12 +116,12 @@ function SearchPage() {
                                 <option>20</option>
                                 <option>50</option>
                             </select>
-                            <button onClick={() => alterarModo()}><FontAwesomeIcon icon={faShuffle} /></button>
-                            <button onClick={() => botaoPesquisar()}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
+                            <button title="Mudar modo de pesquisa" onClick={() => alterarModo()}><FontAwesomeIcon icon={faShuffle} /></button>
+                            <button title="Pesquisar" onClick={() => botaoPesquisar()}><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
                         </div>
                     </div>
                     <div className={style.resultados}>
-                        <h1>{modoPesquisa.transacao === true ? "Transações" : "Parceiros"}</h1>
+                        <h1>{modoPesquisa.transacao === true ? "Transações" : "Indicadores"}</h1>
                         {lista && lista.length > 0 ?
                             modoPesquisa.parceiro === true ?
                                 lista.map((parceiro) => (

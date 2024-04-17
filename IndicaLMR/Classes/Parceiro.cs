@@ -10,9 +10,9 @@ namespace IndicaLMR.Classes
     {
         private string nome, telefone, cpf, senha;
         private string? indicadoPor;
-        private int id, credito;
+        private int id, credito, tipo;
         private int? idParceiro;
-        private bool fechou;
+        private bool fechou, repassado;
 
         public int Id { get { return id; } set {  id = value; } }
         public int? IdParceiro { get { return idParceiro; } set { idParceiro = value; } }
@@ -22,7 +22,9 @@ namespace IndicaLMR.Classes
         public string Senha { get { return senha; } set { senha = value; } }
         public string? IndicadoPor { get { return indicadoPor; } set { indicadoPor = value; } }
         public int Credito { get { return credito; } set { credito = value; } }
+        public int Tipo { get { return tipo; } set { tipo = value; } }
         public bool Fechou { get { return fechou; } set { fechou = value; } }
+        public bool Repassado { get { return repassado; } set { repassado = value; } }
 
         [JsonConstructor]
         public Parceiro() { }
@@ -34,13 +36,16 @@ namespace IndicaLMR.Classes
             Credito = 0;
             Fechou = false;
         }
-        public Parceiro(string nome, string telefone, string cpf, bool fechou, string? indicado_por, int? idParceiro)
+        public Parceiro(int id, string nome, string telefone, string cpf, bool fechou, int tipo, bool repassado, string? indicadoPor, int? idParceiro)
         {
+            Id = id;
             Nome = nome;
             Telefone = telefone;
             Cpf = cpf;
             Fechou = fechou;
-            IndicadoPor = indicado_por;
+            Tipo = tipo;
+            Repassado = repassado;
+            IndicadoPor = indicadoPor;
             IdParceiro = idParceiro;
         }
         public Parceiro(string nome, string telefone, string senha)
@@ -49,25 +54,27 @@ namespace IndicaLMR.Classes
             Telefone = telefone;
             Senha = senha;
         }
-        public Parceiro(int id, string nome, string telefone, string cpf)
+        public Parceiro(int id, string nome, string telefone, string cpf, int tipo)
         {
             Id = id;
             Nome = nome;
             Telefone = telefone;
             Cpf = cpf;
+            Tipo = tipo;
         }
-        public Parceiro(string nome, string telefone, string cpf, string senha)
+        public Parceiro(string nome, string telefone, string cpf, int tipo, string senha)
         {
             Id = 0;
             Nome = nome;
             Telefone = telefone;
             Cpf = cpf;
+            Tipo = tipo;
             Senha = senha;
             Credito = 0;
             Fechou = false;
         }
 
-        private Parceiro(int id, string nome, string telefone, string cpf, int credito, bool fechou)
+        private Parceiro(int id, string nome, string telefone, string cpf, int credito, bool fechou, int tipo)
         {
             Id = id;
             Nome = nome;
@@ -75,6 +82,7 @@ namespace IndicaLMR.Classes
             Cpf = cpf;
             Credito = credito;
             Fechou = fechou;
+            Tipo = tipo;
         }
 
         public bool CadastrarParceiro()
@@ -90,7 +98,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login)", con);
+                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login, @tipo, @repassado)", con);
                 query.Parameters.AddWithValue("@id", Id);
                 query.Parameters.AddWithValue("@nome", Nome);
                 query.Parameters.AddWithValue("@telefone", Telefone);
@@ -99,6 +107,8 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@fechou", Fechou);
                 query.Parameters.AddWithValue("@senha", senhaHash);
                 query.Parameters.AddWithValue("@login", true);
+                query.Parameters.AddWithValue("@tipo", Tipo);
+                query.Parameters.AddWithValue("@repassado", false);
 
                 query.ExecuteNonQuery();
                 con.Close();
@@ -119,7 +129,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login)", con);
+                MySqlCommand query = new MySqlCommand("INSERT INTO parceiro VALUES(@id, @nome, @telefone, @cpf, @credito, @fechou, @senha, @login, @tipo, @repassado)", con);
                 query.Parameters.AddWithValue("@id", Id);
                 query.Parameters.AddWithValue("@nome", Nome);
                 query.Parameters.AddWithValue("@telefone", Telefone);
@@ -128,6 +138,8 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@fechou", Fechou);
                 query.Parameters.AddWithValue("@senha", null);
                 query.Parameters.AddWithValue("@login", true);
+                query.Parameters.AddWithValue("@tipo", 0);
+                query.Parameters.AddWithValue("@repassado", false);
 
                 query.ExecuteNonQuery();
                 long id = query.LastInsertedId;
@@ -197,7 +209,8 @@ namespace IndicaLMR.Classes
                             leitor["telefone"].ToString(),
                             leitor["cpf"].ToString(),
                             (int)leitor["credito"],
-                            (bool)leitor["fechou"]
+                            (bool)leitor["fechou"],
+                            (int)leitor["tipo"]
                             );
                     }
                 }
@@ -220,7 +233,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT parceiro.id, nome, cpf, telefone, fechou, (SELECT nome FROM parceiro WHERE parceiro.id = i.parceiro) AS indicado_por, i.parceiro FROM parceiro LEFT JOIN indicacao as i on i.indicado = parceiro.id WHERE parceiro.id = @id", con);
+                MySqlCommand query = new MySqlCommand("SELECT parceiro.id, nome, cpf, telefone, fechou, parceiro.tipo, repassado, (SELECT nome FROM parceiro WHERE parceiro.id = i.parceiro) AS indicado_por, i.parceiro FROM parceiro LEFT JOIN indicacao as i on i.indicado = parceiro.id WHERE parceiro.id = @id", con);
                 query.Parameters.AddWithValue("@id", id);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -230,10 +243,13 @@ namespace IndicaLMR.Classes
                     while (leitor.Read())
                     {
                         parceiro = new Parceiro(
+                            (int)leitor["id"],
                             leitor["nome"].ToString(),
                             leitor["telefone"].ToString(),
                             leitor["cpf"].ToString(),
                             (bool)leitor["fechou"],
+                            (int)leitor["tipo"],
+                            (bool)leitor["repassado"],
                             leitor["indicado_por"].ToString(),
                             Convert.IsDBNull(leitor["parceiro"]) ? null : (int?)leitor["parceiro"]
                             );
@@ -249,7 +265,53 @@ namespace IndicaLMR.Classes
             return parceiro;
         }
 
-        public static List<Parceiro> ListarParceiros(string nome, string cpf, int pagina, int tamanhoPagina)
+        public static int ContarIndicacoes(int id)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+            int quantidade = 0;
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("SELECT COUNT(id) FROM indicacao WHERE parceiro = @id", con);
+                query.Parameters.AddWithValue("@id", id);
+
+                quantidade = Convert.ToInt32(query.ExecuteScalar());
+
+                con.Close();
+            }
+            catch
+            {
+                quantidade = 0;
+            }
+            return quantidade;
+        }
+
+        public static int ContarIndicacoesFechadas(int id)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+            int quantidade = 0;
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("SELECT COUNT(indicacao.id) FROM indicacao INNER JOIN parceiro AS p on p.id = indicado WHERE parceiro = @id AND p.fechou = true", con);
+                query.Parameters.AddWithValue("@id", id);
+
+                quantidade = Convert.ToInt32(query.ExecuteScalar());
+
+                con.Close();
+            }
+            catch
+            {
+                quantidade = 0;
+            }
+            return quantidade;
+        }
+
+        public static List<Parceiro> ListarParceiros(string nome, string cpf, int? tipo, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Parceiro> parceiros = new List<Parceiro>();
@@ -279,9 +341,29 @@ namespace IndicaLMR.Classes
                     }
                 }
 
-                MySqlCommand query = new MySqlCommand(string.Format("SELECT id, nome, telefone, cpf FROM parceiro {0} LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
+                if (tipo != null)
+                {
+                    if (cpf != null)
+                    {
+                        if (nome != null)
+                        {
+                            filtro += " AND tipo = @tipo";
+                        }
+                        else
+                        {
+                            filtro += " AND tipo = @tipo";
+                        }
+                    }
+                    else
+                    {
+                        filtro += "WHERE tipo = @tipo";
+                    }
+                }
+
+                MySqlCommand query = new MySqlCommand(string.Format("SELECT id, nome, telefone, cpf, tipo FROM parceiro {0} LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
                 query.Parameters.AddWithValue("@nome", nome);
                 query.Parameters.AddWithValue("@cpf", cpf);
+                query.Parameters.AddWithValue("@tipo", tipo);
                 query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
                 query.Parameters.AddWithValue("@offset", offset);
 
@@ -295,7 +377,8 @@ namespace IndicaLMR.Classes
                             (int)leitor["id"],
                             leitor["nome"].ToString(),
                             leitor["telefone"].ToString(),
-                            leitor["cpf"].ToString()
+                            leitor["cpf"].ToString(),
+                            (int)leitor["tipo"]
                             );
                         parceiros.Add(parceiro);
                     }
@@ -406,10 +489,33 @@ namespace IndicaLMR.Classes
                 MySqlCommand query = new MySqlCommand(string.Format("SELECT id FROM parceiro WHERE {0}", filtro), con);
                 query.Parameters.AddWithValue("@cpf", dado);
                 query.Parameters.AddWithValue("@telefone", dado);
-                int id = (int) query.ExecuteScalar();
+                int id = (int)query.ExecuteScalar();
 
                 con.Close();
                 return MudarStatus(id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool MudarStatusRepasse(int id)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET repassado = NOT repassado WHERE id = @id", con);
+                query.Parameters.AddWithValue("@id", id);
+
+                query.ExecuteNonQuery();
+
+                con.Close();
+
+                return true;
             }
             catch
             {
@@ -670,7 +776,8 @@ namespace IndicaLMR.Classes
                                 leitor["telefone"].ToString(),
                                 leitor["cpf"].ToString(),
                                 (int)leitor["credito"],
-                                (bool)leitor["fechou"]
+                                (bool)leitor["fechou"],
+                                (int)leitor["tipo"]
                                 );
                         }
                         else
@@ -741,7 +848,8 @@ namespace IndicaLMR.Classes
                                 leitor["telefone"].ToString(),
                                 leitor["cpf"].ToString(),
                                 (int)leitor["credito"],
-                                (bool)leitor["fechou"]
+                                (bool)leitor["fechou"],
+                                (int)leitor["tipo"]
                                 );
                     }
                 }

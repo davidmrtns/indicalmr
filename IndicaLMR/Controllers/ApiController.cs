@@ -29,7 +29,7 @@ namespace IndicaLMR.Controllers
                 {
                     try
                     {
-                        Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, parceiroModel.senha);
+                        Parceiro parceiro = new Parceiro(parceiroModel.nome, parceiroModel.telefone, parceiroModel.cpf, parceiroModel.tipo.Value, parceiroModel.senha);
                         return Ok(parceiro.CadastrarParceiro());
                     }
                     catch
@@ -87,26 +87,34 @@ namespace IndicaLMR.Controllers
             try
             {
                 Transacao transacao;
+                int tipoParceiro = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!.Tipo;
 
-                if (novaTransacao.premio != null)
+                if (tipoParceiro == 0)
                 {
-                    int valor = Premio.BuscarValor((int)novaTransacao.premio);
-                    transacao = new Transacao(0, novaTransacao.parceiro, valor, 2, novaTransacao.premio, false);
+                    if (novaTransacao.premio != null)
+                    {
+                        int valor = Premio.BuscarValor((int)novaTransacao.premio);
+                        transacao = new Transacao(0, novaTransacao.parceiro, valor, 2, novaTransacao.premio, false);
+                    }
+                    else
+                    {
+                        transacao = new Transacao(0, novaTransacao.parceiro, novaTransacao.valor, novaTransacao.tipo, novaTransacao.premio, false);
+                    }
+
+                    int credito = Parceiro.ConsultarCredito(novaTransacao.parceiro);
+
+                    if (transacao.CriarTransacao(credito))
+                    {
+                        return Ok(true);
+                    }
+                    else
+                    {
+                        return Ok(false);
+                    }
                 }
                 else
                 {
-                    transacao = new Transacao(0, novaTransacao.parceiro, novaTransacao.valor, novaTransacao.tipo, novaTransacao.premio, false);
-                }
-
-                int credito = Parceiro.ConsultarCredito(novaTransacao.parceiro);
-                
-                if (transacao.CriarTransacao(credito))
-                {
-                    return Ok(true);
-                }
-                else
-                {
-                    return Ok(false);
+                    return BadRequest();
                 }
             }
             catch
@@ -130,6 +138,78 @@ namespace IndicaLMR.Controllers
                 {
                     return Ok(parceiro);
                 }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("contar-indicacoes")]
+        public IActionResult ContarIndicacoes()
+        {
+            try
+            {
+                Parceiro parceiro = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!;
+
+                if (parceiro == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(Parceiro.ContarIndicacoes(parceiro.Id));
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("contar-indicacoes-fechadas")]
+        public IActionResult ContarIndicacoesFechadas()
+        {
+            try
+            {
+                Parceiro parceiro = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!;
+
+                if (parceiro == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(Parceiro.ContarIndicacoesFechadas(parceiro.Id));
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("contar-indicacoes-id/{id}")]
+        public IActionResult ContarIndicacoesId(int id)
+        {
+            try
+            {
+                return Ok(Parceiro.ContarIndicacoes(id));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("contar-indicacoes-fechadas-id/{id}")]
+        public IActionResult ContarIndicacoesFechadasId(int id)
+        {
+            try
+            {
+                return Ok(Parceiro.ContarIndicacoesFechadas(id));
             }
             catch
             {
@@ -190,6 +270,29 @@ namespace IndicaLMR.Controllers
             {
                 int id = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!.Id;
 
+                List<Parceiro> indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
+
+                if (indicacoes == null)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return Ok(indicacoes);
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("listar-indicacoes-id/{id}")]
+        public IActionResult ListarIndicacoesPorId(int id, [FromQuery] int pagina, [FromQuery] int tamanhoPagina)
+        {
+            try
+            {
                 List<Parceiro> indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
 
                 if (indicacoes == null)
@@ -367,11 +470,11 @@ namespace IndicaLMR.Controllers
         [Authorize(Policy = "Admin")]
         [HttpGet("listar-parceiros")]
 
-        public IActionResult ListarParceiros([FromQuery] int pagina, [FromQuery] int tamanhoPagina, [FromQuery] string? nome = null, [FromQuery] string? cpf = null)
+        public IActionResult ListarParceiros([FromQuery] int pagina, [FromQuery] int tamanhoPagina, [FromQuery] string? nome = null, [FromQuery] string? cpf = null, [FromQuery] int? tipo = null)
         {
             try
             {
-                List<Parceiro> parceiros = Parceiro.ListarParceiros(nome, cpf, pagina, tamanhoPagina);
+                List<Parceiro> parceiros = Parceiro.ListarParceiros(nome, cpf, tipo, pagina, tamanhoPagina);
                 return Ok(parceiros);
             }
             catch
@@ -650,6 +753,21 @@ namespace IndicaLMR.Controllers
             try
             {
                 Transacao.MudarStatus(id);
+                return Ok(true);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPatch("mudar-status-repasse/{id}")]
+        public IActionResult MudarStatusRepasse(int id)
+        {
+            try
+            {
+                Parceiro.MudarStatusRepasse(id);
                 return Ok(true);
             }
             catch

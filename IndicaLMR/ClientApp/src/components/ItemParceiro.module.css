@@ -43,6 +43,11 @@ div.container div input{
     border: 0;
     color: white;
     text-align: center;
+    cursor: text;
+}
+
+div.parceiro {
+    background: #428ddd;
 }
 
 div.baixado {

@@ -118,7 +118,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT transacao.valor, tipo, data, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
+                MySqlCommand query = new MySqlCommand("SELECT transacao.valor, transacao.tipo, data, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
                 query.Parameters.AddWithValue("@parceiro", parceiro);
                 query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
                 query.Parameters.AddWithValue("@offset", offset);
@@ -188,11 +188,11 @@ namespace IndicaLMR.Classes
                 {
                     if (nome != null || cpf != null)
                     {
-                        filtro += " AND tipo = @tipo";
+                        filtro += " AND transacao.tipo = @tipo";
                     }
                     else
                     {
-                        filtro += "WHERE tipo = @tipo";
+                        filtro += "WHERE transacao.tipo = @tipo";
                     }
                 }
 
@@ -215,7 +215,7 @@ namespace IndicaLMR.Classes
                     }
                 }
 
-                MySqlCommand query = new MySqlCommand(string.Format("SELECT transacao.id, parceiro, parceiro.nome AS nome_parceiro, transacao.valor, tipo, data, baixa, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id INNER JOIN parceiro ON transacao.parceiro = parceiro.id {0} ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
+                MySqlCommand query = new MySqlCommand(string.Format("SELECT transacao.id, parceiro, parceiro.nome AS nome_parceiro, transacao.valor, transacao.tipo, data, baixa, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id INNER JOIN parceiro ON transacao.parceiro = parceiro.id {0} ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
                 query.Parameters.AddWithValue("@baixa", baixa);
                 query.Parameters.AddWithValue("@tipo", tipo);
                 query.Parameters.AddWithValue("@nome", nome);
@@ -267,7 +267,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT transacao.id, transacao.valor, tipo, data, baixa, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
+                MySqlCommand query = new MySqlCommand("SELECT transacao.id, transacao.valor, transacao.tipo, data, baixa, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
                 query.Parameters.AddWithValue("@parceiro", parceiro);
                 query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
                 query.Parameters.AddWithValue("@offset", offset);

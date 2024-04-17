@@ -1,4 +1,4 @@
-﻿import { faEye, faGift, faClipboardCheck, faKey } from '@fortawesome/free-solid-svg-icons';
+﻿import { faEye, faGift, faClipboardCheck, faKey, faGem } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import style from './ItemParceiro.module.css';
 import InputMask from "react-input-mask";
@@ -18,9 +18,9 @@ function ItemParceiro({ parceiro, transacao, exibir, abrirModal, atualizar }) {
 
     if (parceiro) {
         return (
-            <div className={style.container}>
+            <div className={parceiro.tipo === 1 ? style.container + " " + style.parceiro : style.container}>
                 <div className={style.nome}>
-                    <p>{parceiro.nome}</p>
+                    <p>{parceiro.tipo === 1 ? <FontAwesomeIcon icon={faGem} /> : ""} {parceiro.nome}</p>
                 </div>
                 <div>
                     <InputMask mask="(99) 99999-9999" disabled value={parceiro.telefone} />

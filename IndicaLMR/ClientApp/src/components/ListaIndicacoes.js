@@ -3,7 +3,7 @@ import style from "./ListaIndicacoes.module.css";
 import Fetch from "../classes/Fetch";
 import { useState, useEffect } from "react";
 
-function ListaIndicacoes() {
+function ListaIndicacoes({ usuario }) {
     const recursos = new Recursos();
     const fetch = new Fetch();
     const [exibirLista, setExibirLista] = useState(false);
@@ -35,6 +35,7 @@ function ListaIndicacoes() {
                                         <th scope="col">Nome</th>
                                         <th scope="col">Telefone</th>
                                         <th scope="col">Fechou contrato?</th>
+                                        {usuario.Tipo === 1 ? <th scope="col">Percentual repassado?</th> : ""}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -44,9 +45,10 @@ function ListaIndicacoes() {
                                                 <td>{indicacao.nome}</td>
                                                 <td>{indicacao.telefone}</td>
                                                 <td>{indicacao.fechou ? <img src={recursos.getCheck()} alt="Fechou" /> : <img src={recursos.getCancelar()} alt="Não fechou" />}</td>
+                                                {usuario.Tipo === 1 ? <td>{indicacao.repassado === true ? <img src={recursos.getCheck()} alt="Repassado" /> : <img src={recursos.getCancelar()} alt="Não repassado" />}</td> : ""}
                                             </tr>
                                         ))
-                                    : <tr><td colSpan="3">Você ainda não fez nenhuma indicação</td></tr>
+                                        : <tr><td colSpan={usuario.Tipo === 1 ? 4 : 3}>Você ainda não fez nenhuma indicação</td></tr>
                                     }
                                 </tbody>
                             </table>

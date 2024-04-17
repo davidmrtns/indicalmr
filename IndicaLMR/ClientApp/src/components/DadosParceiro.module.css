@@ -3,6 +3,11 @@
     opacity: 40%;
 }
 
+.statusparceiro{
+    font-size: 18px;
+    margin-bottom: 18px;
+}
+
 div.dados {
     background: #ffb400;
     width: 60%;
@@ -53,6 +58,7 @@ div.informacoes input{
     width: 119px;
     text-align: center;
     color: unset;
+    cursor: text;
 }
 
 div.transacoes p {
@@ -72,6 +78,7 @@ div.transacoes table thead {
 
 div.transacoes table input[type=checkbox]{
     width: 16px;
+    cursor: default;
 }
 
 div.transacoes table tbody tr {
@@ -85,6 +92,19 @@ div.transacoes table tbody tr:nth-child(odd) {
 
 div.transacoes table tbody tr td{
     padding: 5px;
+}
+
+div.transacoes table td img{
+    width: 17px;
+}
+
+div.transacoes table input{
+    text-align: center;
+    border: 0;
+    background: 0;
+    color: unset;
+    width: 140px;
+    cursor: text;
 }
 
 p.premioresgatado {
