@@ -172,11 +172,11 @@ function Login() {
             if (resultado.status === 200) {
                 window.location.href = "/";
             } else if (resultado.status === 400) {
-                alert('Um erro ocorreu');
+                setMensagem('Um erro ocorreu. Tente novamente');
                 setEnviado(false);
             }
         } else {
-            alert('Preencha os campos corretamente!');
+            setMensagem('Preencha os campos corretamente!');
             setEnviado(false);
         }
     }

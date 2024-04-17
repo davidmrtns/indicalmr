@@ -10,6 +10,7 @@ function Login() {
     const recursos = new Recursos();
     const fetch = new Fetch();
     const LMRLogo = recursos.getLMRLogo();
+    const [mensagem, setMensagem] = useState(null);
     const [enviado, setEnviado] = useState(null);
     const [cpfDigitado, setCpfDigitado] = useState(false);
     const [exibirSenha, setExibirSenha] = useState(false);
@@ -32,11 +33,11 @@ function Login() {
             if (resultado.status === 200) {
                 window.location.href = "/";
             } else if (resultado.status === 401) {
-                alert('O usuário ou senha inseridos não existem');
+                setMensagem('O usuário ou senha inseridos não existem');
                 setEnviado(false);
             }
         } else {
-            alert('Digite um CPF e senha válidos!');
+            setMensagem('Digite um CPF e senha válidos!');
             setEnviado(false);
         }
     }
@@ -55,7 +56,7 @@ function Login() {
                             <input name="senha" placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} onKeyDown={(e) => enviar(e)} />
                             <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
                         </div>
-                        <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>
+                        {mensagem ? <p className={style.mensagem}>{mensagem}</p> : ""}
                         <div className={style.botao}>
                             <button className={enviado ? style.enviado : ""} id="btentrar" type="button" disabled={enviado} onClick={() => enviarSolicitacao()}>
                                 {enviado ? <img className={style.enviando} src={recursos.getEnviando()} />
@@ -64,6 +65,7 @@ function Login() {
                         </div>
                     </form>
                 </div>
+                <a className={style.link} href="/cadastro">Acessando pela primeira vez? Clique aqui</a>
             </div>
         </div>
     );

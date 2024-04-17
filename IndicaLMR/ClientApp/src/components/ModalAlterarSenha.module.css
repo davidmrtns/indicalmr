@@ -1,0 +1,40 @@
+﻿.corpo{
+    text-align: center;
+}
+
+.corpo h1{
+    margin-bottom: 20px;
+}
+
+.btsalvar {
+    background-color: #1e00c3 !important;
+}
+
+p.mensagem {
+    font-weight: 600;
+    color: #6a6a6a;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+div.campo input{
+    border: 1px solid black;
+    padding: 0 2px;
+    font-size: 15px;
+    width: 50%;
+    height: 35px;
+    outline: none;
+    text-align: center;
+}
+
+div.requisitos{
+    margin-top: 10px;
+}
+
+p.valido {
+    color: #00643c;
+}
+
+p.invalido {
+    color: #d0192a;
+}

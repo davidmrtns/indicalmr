@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import style from './DadosParceiro.module.css';
 import Fetch from '../classes/Fetch';
-import { faCircleUser, faXmark, faGift, faFileContract, faFileSignature } from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser, faXmark, faGift, faFileContract, faFileSignature, faHandPointRight, faWallet, faPhone, faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Recursos from '../classes/Recursos';
 import Utils from '../classes/Utils';
 import ModalConfirmacao from './ModalConfirmacao';
+import InputMask from "react-input-mask";
 
 function DadosParceiro({ id, fechar }) {
     const fetch = new Fetch();
@@ -61,9 +62,18 @@ function DadosParceiro({ id, fechar }) {
                     <div className={style.nome}>
                         <p className={style.iconeconta}><FontAwesomeIcon icon={faCircleUser} /></p>
                         <h2>{parceiro.nome}</h2>
-                        <p>Crédito: R$ {parceiro.credito},00</p>
-                        {parceiro.fechou === true ? <p className={style.contratofechado}><FontAwesomeIcon icon={faFileContract} /> Fechou contrato</p> : <p className={style.contratoaberto}><FontAwesomeIcon icon={faFileSignature} /> Não fechou contrato</p>}
-                        {parceiro.fechou === false ? <button className={style.botaostatus} onClick={() => setExibirModal(true)}>Mudar o status do contrato</button> : ""}
+                        <div className={style.informacoes}>
+                            <p title="Indicado por"><FontAwesomeIcon icon={faHandPointRight} /> {parceiro.idParceiro ? parceiro.indicadoPor : "[Não foi indicado]"}</p>
+                            <p title="CPF"><FontAwesomeIcon icon={faIdCard} /> {parceiro.cpf ? <InputMask mask="999.999.999-99" disabled value={parceiro.cpf} /> : "[Sem CPF]"}</p>
+                        </div>
+                        <div className={style.informacoes}>
+                            <p title="Número de telefone"><FontAwesomeIcon icon={faPhone} /> <InputMask mask="(99) 99999-9999" disabled value={parceiro.telefone} /></p>
+                            <p title="Saldo de crédito"><FontAwesomeIcon icon={faWallet} /> R$ {parceiro.credito},00</p>
+                        </div>
+                        <div className={style.statuscontrato}>
+                            {parceiro.fechou === true ? <p className={style.contratofechado}><FontAwesomeIcon icon={faFileContract} /> Fechou contrato</p> : <p className={style.contratoaberto}><FontAwesomeIcon icon={faFileSignature} /> Não fechou contrato</p>}
+                            {parceiro.fechou === false ? <button className={style.botaostatus} onClick={() => setExibirModal(true)}>Mudar o status do contrato</button> : ""}
+                        </div>
                     </div>
                     <hr />
                     <div className={style.transacoes}>

@@ -27,6 +27,7 @@ div.container div.nome{
 
 div.container div.exibir{
     justify-content: end;
+    gap: 10px;
 }
 
 div.container div.exibir > * {

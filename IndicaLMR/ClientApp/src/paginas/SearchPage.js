@@ -7,6 +7,7 @@ import ItemParceiro from "../components/ItemParceiro";
 import { faMagnifyingGlass, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DadosParceiro from "../components/DadosParceiro";
+import ModalAlterarSenha from "../components/ModalAlterarSenha";
 
 function SearchPage() {
     var fetch = new Fetch();
@@ -19,7 +20,9 @@ function SearchPage() {
     const [pagina, setPagina] = useState(1);
     const [tamPagina, setTamPagina] = useState(5);
     const [idParceiro, setIdParceiro] = useState(null);
+    const [idAlterarSenha, setIdAlterarSenha] = useState(null);
     const [atualizar, setAtualizar] = useState(false);
+    const [exibirModal, setExibirModal] = useState(false);
 
     useEffect(() => {
         const body = document.querySelector('body');
@@ -59,7 +62,12 @@ function SearchPage() {
 
     useEffect(() => {
         pesquisar();
-    }, [pagina, atualizar])
+    }, [pagina, atualizar]);
+
+    const abrirModal = (id) => {
+        setExibirModal(true);
+        setIdAlterarSenha(id);
+    }
 
     return (
         <>
@@ -107,7 +115,7 @@ function SearchPage() {
                         {lista && lista.length > 0 ?
                             modoPesquisa.parceiro === true ?
                                 lista.map((parceiro) => (
-                                    <ItemParceiro parceiro={parceiro} exibir={atualizarId} />
+                                    <ItemParceiro parceiro={parceiro} exibir={atualizarId} abrirModal={abrirModal} />
                                 ))
                                 : lista.map((transacao) => (
                                     <ItemParceiro transacao={transacao} atualizar={() => setAtualizar(!atualizar)} />
@@ -117,12 +125,13 @@ function SearchPage() {
                     {lista && lista.length > 0 ?
                         <div className={style.controles}>
                             <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
-                            <p onClick={(e) => alert("tamPagina: " + tamPagina + " lista.length: " + lista.length)}>{pagina}</p>
+                            <p>{pagina}</p>
                             <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < tamPagina ? style.desabilitado : ""} onClick={() => lista && lista.length == tamPagina ? setPagina(pagina + 1) : ""} />
                         </div>
                         : ""}
                 </div>
                 <DadosParceiro id={idParceiro} fechar={atualizarId} />
+                <ModalAlterarSenha id={idAlterarSenha} onHide={() => setExibirModal(false)} show={exibirModal} />
             </div>
         </>
     );

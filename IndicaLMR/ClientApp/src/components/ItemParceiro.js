@@ -1,4 +1,4 @@
-﻿import { faEye, faGift, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
+﻿import { faEye, faGift, faClipboardCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import style from './ItemParceiro.module.css';
 import InputMask from "react-input-mask";
@@ -6,7 +6,7 @@ import Fetch from '../classes/Fetch';
 import { Tooltip } from "react-tooltip";
 import Utils from '../classes/Utils';
 
-function ItemParceiro({ parceiro, transacao, exibir, atualizar }) {
+function ItemParceiro({ parceiro, transacao, exibir, abrirModal, atualizar }) {
     const fetch = new Fetch();
     const utils = new Utils();
 
@@ -26,9 +26,10 @@ function ItemParceiro({ parceiro, transacao, exibir, atualizar }) {
                     <InputMask mask="(99) 99999-9999" disabled value={parceiro.telefone} />
                 </div>
                 <div>
-                    {parceiro.cpf ? <InputMask mask="999.999.999-99" disabled value={parceiro.cpf} /> : <p className={style.semcpf}>(Sem CPF)</p>}
+                    {parceiro.cpf ? <InputMask mask="999.999.999-99" disabled value={parceiro.cpf} /> : <p className={style.semcpf}>[Sem CPF]</p>}
                 </div>
                 <div className={style.exibir}>
+                    <FontAwesomeIcon icon={faKey} onClick={() => abrirModal(parceiro.id)} />
                     <FontAwesomeIcon icon={faEye} onClick={() => exibir(parceiro.id)} />
                 </div>
             </div>

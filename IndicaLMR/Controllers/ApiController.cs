@@ -565,6 +565,27 @@ namespace IndicaLMR.Controllers
         }
 
         [Authorize(Policy = "Admin")]
+        [HttpPatch("editar-senha-parceiro")]
+        public IActionResult EditarSenhaParceiro([FromBody] SenhaModel senhaModel)
+        {
+            try
+            {
+                if (senhaModel.senha == senhaModel.confirmacao)
+                {
+                    return Ok(Parceiro.AtualizarSenha(senhaModel.id, senhaModel.senha));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
         [HttpDelete("excluir-usuario/{id}")]
         public IActionResult ExcluirUsuario(int id)
         {

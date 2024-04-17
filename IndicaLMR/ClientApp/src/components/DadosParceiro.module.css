@@ -36,6 +36,25 @@ div.nome h2{
     font-weight: bold;
 }
 
+div.informacoes {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    justify-content: center;
+}
+
+div.informacoes p{
+    margin: 0;
+}
+
+div.informacoes input{
+    background: none;
+    border: 0;
+    width: 119px;
+    text-align: center;
+    color: unset;
+}
+
 div.transacoes p {
     font-size: 28px;
 }
@@ -103,16 +122,27 @@ div.controles img {
     cursor: pointer;
 }
 
-p.contratofechado{
-    color: green;
-    font-size: 17px;
-    font-weight: bold;
+div.statuscontrato {
+    margin: 14px 0;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
 }
 
-p.contratoaberto {
-    color: red;
+div.statuscontrato p{
     font-size: 17px;
     font-weight: bold;
+    margin: 0;
+}
+
+div.statuscontrato p.contratofechado {
+    color: green;
+}
+
+div.statuscontrato p.contratoaberto {
+    color: red;
 }
 
 button.botaostatus {

@@ -439,6 +439,27 @@
         return resposta;
     }
 
+    async atualizarSenhaParceiro(id, senha, confirmacao) {
+        var resposta;
+
+        try {
+            await fetch('api/editar-senha-parceiro', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    senha: senha,
+                    confirmacao: confirmacao
+                })
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
     async excluirConta() {
         var resposta;
 

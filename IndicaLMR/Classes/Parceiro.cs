@@ -9,14 +9,18 @@ namespace IndicaLMR.Classes
     public class Parceiro
     {
         private string nome, telefone, cpf, senha;
+        private string? indicadoPor;
         private int id, credito;
+        private int? idParceiro;
         private bool fechou;
 
         public int Id { get { return id; } set {  id = value; } }
+        public int? IdParceiro { get { return idParceiro; } set { idParceiro = value; } }
         public string Nome { get { return nome; } set {  nome = value.ToUpper(); } }
         public string Telefone { get { return telefone; } set { telefone = value; } }
         public string Cpf { get { return cpf; } set { cpf = value; } }
         public string Senha { get { return senha; } set { senha = value; } }
+        public string? IndicadoPor { get { return indicadoPor; } set { indicadoPor = value; } }
         public int Credito { get { return credito; } set { credito = value; } }
         public bool Fechou { get { return fechou; } set { fechou = value; } }
 
@@ -30,11 +34,14 @@ namespace IndicaLMR.Classes
             Credito = 0;
             Fechou = false;
         }
-        public Parceiro(string nome, string telefone, bool fechou)
+        public Parceiro(string nome, string telefone, string cpf, bool fechou, string? indicado_por, int? idParceiro)
         {
             Nome = nome;
             Telefone = telefone;
+            Cpf = cpf;
             Fechou = fechou;
+            IndicadoPor = indicado_por;
+            IdParceiro = idParceiro;
         }
         public Parceiro(string nome, string telefone, string senha)
         {
@@ -213,7 +220,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT nome, telefone, fechou FROM parceiro WHERE id = @id", con);
+                MySqlCommand query = new MySqlCommand("SELECT parceiro.id, nome, cpf, telefone, fechou, (SELECT nome FROM parceiro WHERE parceiro.id = i.parceiro) AS indicado_por, i.parceiro FROM parceiro LEFT JOIN indicacao as i on i.indicado = parceiro.id WHERE parceiro.id = @id", con);
                 query.Parameters.AddWithValue("@id", id);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -225,7 +232,10 @@ namespace IndicaLMR.Classes
                         parceiro = new Parceiro(
                             leitor["nome"].ToString(),
                             leitor["telefone"].ToString(),
-                            (bool)leitor["fechou"]
+                            leitor["cpf"].ToString(),
+                            (bool)leitor["fechou"],
+                            leitor["indicado_por"].ToString(),
+                            Convert.IsDBNull(leitor["parceiro"]) ? null : (int?)leitor["parceiro"]
                             );
                     }
                 }
@@ -422,6 +432,34 @@ namespace IndicaLMR.Classes
 
                 MySqlCommand query = new MySqlCommand("UPDATE parceiro SET cpf = @cpf, senha = @senha WHERE id = @id", con);
                 query.Parameters.AddWithValue("@cpf", cpf);
+                query.Parameters.AddWithValue("@senha", senhaHash);
+                query.Parameters.AddWithValue("@id", id);
+
+                query.ExecuteNonQuery();
+
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool AtualizarSenha(int id, string senha)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+
+            try
+            {
+                con.Open();
+
+                var sha = SHA256.Create();
+                var asByteArray = Encoding.Default.GetBytes(senha);
+                var hashedPassword = sha.ComputeHash(asByteArray);
+                string senhaHash = Convert.ToBase64String(hashedPassword);
+
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET senha = @senha WHERE id = @id", con);
                 query.Parameters.AddWithValue("@senha", senhaHash);
                 query.Parameters.AddWithValue("@id", id);
 
