@@ -454,7 +454,7 @@ namespace IndicaLMR.Classes
 
                 if (statusFechou == false)
                 {
-                    query.CommandText = "UPDATE parceiro p INNER JOIN indicacao i ON p.id = i.parceiro SET p.credito = p.credito + (SELECT valor FROM configuracao WHERE chave = 'valorInd') WHERE i.indicado = @id";
+                    query.CommandText = "UPDATE parceiro p INNER JOIN indicacao i ON p.id = i.parceiro SET p.credito = p.credito + (SELECT valor FROM configuracao WHERE chave = 'valorInd') WHERE i.indicado = @id AND p.tipo = 0";
                     query.ExecuteNonQuery();
                 }
 
