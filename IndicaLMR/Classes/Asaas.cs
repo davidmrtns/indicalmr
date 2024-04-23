@@ -23,13 +23,16 @@ namespace IndicaLMR.Classes
             return id;
         }
 
-        public async Task<Data[]> ListarCobrancas(string id)
+        public async Task<RespostaAPI> ListarCobrancas(string id, int pagina)
         {
-            var response = await _httpClient.GetAsync(urlBase + "payments?customer=" + id + "&status=PENDING");
+            int offset = pagina == 1 ? 0 : (pagina - 1) * 5;
+            var response = await _httpClient.GetAsync(urlBase + "payments?customer=" + id + "&status=PENDING&limit=6&offset=" + offset);
             response.EnsureSuccessStatusCode();
             var conteudo = await response.Content.ReadAsStringAsync();
-            var responseObj = JsonConvert.DeserializeObject<RespostaAPI>(conteudo);
-            return responseObj.Data;
+            var resposta = JsonConvert.DeserializeObject<RespostaAPI>(conteudo);
+            resposta.HasMore = 5 < resposta.Data.Length ? true : false;
+            resposta.Data = resposta.Data.Length > 5 ? resposta.Data.SkipLast(1).ToArray() : resposta.Data;
+            return resposta;
         }
     }
 

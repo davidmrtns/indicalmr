@@ -7,14 +7,17 @@ function ListaCobrancas() {
     const recursos = new Recursos();
     const fetch = new Fetch();
     const [exibirLista, setExibirLista] = useState(false);
-    const [lista, setLista] = useState(null);
+    const [dados, setDados] = useState({
+        lista: null,
+        temMais: null
+    });
     const [pagina, setPagina] = useState(1);
     const [atualizar, setAtualizar] = useState(false);
 
     useEffect(() => {
         const buscarDados = async () => {
-            var itens = await fetch.listarCobrancas();
-            setLista(itens);
+            var itens = await fetch.listarCobrancas(pagina);
+            setDados({ lista: itens.data, temMais: itens.hasMore });
         }
 
         buscarDados();
@@ -23,7 +26,7 @@ function ListaCobrancas() {
     const soma = () => {
         let soma = 0;
 
-        lista.forEach(cobranca => {
+        dados.lista.forEach(cobranca => {
             soma += cobranca.value
         });
 
@@ -37,7 +40,7 @@ function ListaCobrancas() {
             </p>
             {exibirLista ?
                 <>
-                    {lista ?
+                    {dados.lista ?
                         <>
                             <table>
                                 <thead>
@@ -48,8 +51,8 @@ function ListaCobrancas() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lista.length >= 1 ?
-                                        lista.map((cobranca) => (
+                                    {dados.lista.length >= 1 ?
+                                        dados.lista.map((cobranca) => (
                                             <tr>
                                                 <td>{new Intl.DateTimeFormat('pt-BR', { day: "numeric", month: "numeric", year: "numeric" }).format(new Date(cobranca.dateCreated))}</td>
                                                 <td>{cobranca.description}</td>
@@ -58,7 +61,7 @@ function ListaCobrancas() {
                                         ))
                                     : <tr><td colSpan="3">Você não tem nenhuma cobrança em aberto</td></tr>}
                                 </tbody>
-                                {lista.length >= 1 ?
+                                {dados.lista.length >= 1 ?
                                     <tfoot>
                                         <tr>
                                             <th colSpan="2">Valor total</th>
@@ -74,7 +77,7 @@ function ListaCobrancas() {
                                 <div>
                                     <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
                                     <p>{pagina}</p>
-                                    <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < 5 ? style.desabilitado : ""} onClick={() => lista && lista.length === 5 ? setPagina(pagina + 1) : ""} />
+                                    <img src={recursos.getProximo()} alt="Próxima página" className={dados.temMais === false ? style.desabilitado : ""} onClick={() => dados.temMais === true ? setPagina(pagina + 1) : ""} />
                                 </div>
                             </div>
                         </> :

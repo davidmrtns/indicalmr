@@ -270,16 +270,8 @@ namespace IndicaLMR.Controllers
             {
                 int id = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!.Id;
 
-                List<Parceiro> indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
-
-                if (indicacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(indicacoes);
-                }
+                ParceirosDTO indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
+                return Ok(indicacoes);
             }
             catch
             {
@@ -293,16 +285,8 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Parceiro> indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
-
-                if (indicacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(indicacoes);
-                }
+                ParceirosDTO indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
+                return Ok(indicacoes);
             }
             catch
             {
@@ -317,16 +301,8 @@ namespace IndicaLMR.Controllers
             {
                 int id = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!.Id;
 
-                List<Transacao> transacoes = Transacao.ListarTransacoes(id, pagina, tamanhoPagina);
-
-                if (transacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(transacoes);
-                }
+                TransacoesDTO transacoes = Transacao.ListarTransacoes(id, pagina, tamanhoPagina);
+                return Ok(transacoes);
             }
             catch
             {
@@ -335,20 +311,19 @@ namespace IndicaLMR.Controllers
         }
 
         [HttpGet("asaas")]
-        public async Task<IActionResult> UsarAsaas()
+        public async Task<IActionResult> UsarAsaas([FromQuery] int pagina = 1)
         {
             string cpf = JsonSerializer.Deserialize<Parceiro>(HttpContext.Session.GetString("_LoggedUser")!)!.Cpf;
 
             try
             {
                 string id = await _asaas.BuscarId(cpf);
-                var boletos = await _asaas.ListarCobrancas(id);
+                var boletos = await _asaas.ListarCobrancas(id, pagina);
                 return Ok(boletos);
             }
-            catch (Exception erro)
+            catch
             {
-                string msg = erro.Message;
-                return BadRequest();
+                return Ok(new RespostaAPI { HasMore = false, Data = [] });
             }
         }
 
@@ -427,16 +402,8 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Parceiro> indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
-
-                if (indicacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(indicacoes);
-                }
+                ParceirosDTO indicacoes = Parceiro.ListarIndicacoes(id, pagina, tamanhoPagina);
+                return Ok(indicacoes);
             }
             catch
             {
@@ -450,16 +417,8 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Transacao> transacoes = Transacao.ListarTransacoes(id, pagina, tamanhoPagina);
-
-                if (transacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(transacoes);
-                }
+                TransacoesDTO transacoes = Transacao.ListarTransacoes(id, pagina, tamanhoPagina);
+                return Ok(transacoes);
             }
             catch
             {
@@ -474,7 +433,7 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Parceiro> parceiros = Parceiro.ListarParceiros(nome, cpf, tipo, pagina, tamanhoPagina);
+                ParceirosDTO parceiros = Parceiro.ListarParceiros(nome, cpf, tipo, pagina, tamanhoPagina);
                 return Ok(parceiros);
             }
             catch
@@ -489,16 +448,8 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Transacao> transacoes = Transacao.ListarTransacoesFiltro(pagina, tamanhoPagina, tipo, baixa, nome, cpf);
-
-                if (transacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(transacoes);
-                }
+                TransacoesDTO transacoes = Transacao.ListarTransacoesFiltro(pagina, tamanhoPagina, tipo, baixa, nome, cpf);
+                return Ok(transacoes);
             }
             catch
             {
@@ -512,16 +463,8 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                List<Transacao> transacoes = Transacao.ListarTransacoesPorParceiro(id, pagina, tamanhoPagina);
-
-                if (transacoes == null)
-                {
-                    return NoContent();
-                }
-                else
-                {
-                    return Ok(transacoes);
-                }
+                TransacoesDTO transacoes = Transacao.ListarTransacoesPorParceiro(id, pagina, tamanhoPagina);
+                return Ok(transacoes);
             }
             catch
             {

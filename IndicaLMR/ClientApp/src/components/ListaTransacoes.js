@@ -11,14 +11,17 @@ function ListaTransacoes() {
     const fetch = new Fetch();
     const utils = new Utils()
     const [exibirLista, setExibirLista] = useState(false);
-    const [lista, setLista] = useState(null);
+    const [dados, setDados] = useState({
+        lista: null,
+        temMais: null
+    });
     const [pagina, setPagina] = useState(1);
     const [atualizar, setAtualizar] = useState(false);
 
     useEffect(() => {
         const buscarDados = async () => {
             var itens = await fetch.listarTransacoes(pagina);
-            setLista(itens);
+            setDados({ lista: itens.transacoes, temMais: itens.temMais });
         }
 
         buscarDados();
@@ -31,7 +34,7 @@ function ListaTransacoes() {
             </p>
             {exibirLista ?
                 <>
-                    {lista ?
+                    {dados.lista ?
                         <>
                             <table>
                                 <thead>
@@ -42,8 +45,8 @@ function ListaTransacoes() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lista.length >= 1 ?
-                                        lista.map((transacao) => (
+                                    {dados.lista.length >= 1 ?
+                                        dados.lista.map((transacao) => (
                                             <tr>
                                                 <td>{utils.formatarData(transacao.data)}</td>
                                                 {transacao.tipo === 0 || transacao.tipo === 1 ? <td>R$ {transacao.valor}</td> : <td>{transacao.valor} pontos</td>}
@@ -61,7 +64,7 @@ function ListaTransacoes() {
                                 <div>
                                     <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
                                     <p>{pagina}</p>
-                                    <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < 5 ? style.desabilitado : ""} onClick={() => lista && lista.length === 5 ? setPagina(pagina + 1) : ""} />
+                                    <img src={recursos.getProximo()} alt="Próxima página" className={dados.temMais === false ? style.desabilitado : ""} onClick={() => dados.temMais === true ? setPagina(pagina + 1) : ""} />
                                 </div>
                             </div>
                         </> :

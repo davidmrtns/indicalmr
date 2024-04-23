@@ -311,7 +311,7 @@ namespace IndicaLMR.Classes
             return quantidade;
         }
 
-        public static List<Parceiro> ListarParceiros(string nome, string cpf, int? tipo, int pagina, int tamanhoPagina)
+        public static ParceirosDTO ListarParceiros(string nome, string cpf, int? tipo, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Parceiro> parceiros = new List<Parceiro>();
@@ -364,7 +364,7 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@nome", nome);
                 query.Parameters.AddWithValue("@cpf", cpf);
                 query.Parameters.AddWithValue("@tipo", tipo);
-                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
+                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -394,10 +394,20 @@ namespace IndicaLMR.Classes
             {
                 parceiros.Clear();
             }
-            return parceiros;
+
+            bool temMais = tamanhoPagina < parceiros.Count ? true : false;
+            if (parceiros.Count > tamanhoPagina) { parceiros.RemoveAt(parceiros.Count - 1); };
+
+            ParceirosDTO parceirosDTO = new ParceirosDTO
+            {
+                Parceiros = parceiros,
+                TemMais = temMais
+            };
+
+            return parceirosDTO;
         }
 
-        public static List<Parceiro> ListarIndicacoes(int parceiro, int pagina, int tamanhoPagina)
+        public static ParceirosDTO ListarIndicacoes(int parceiro, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Parceiro> indicacoes = new List<Parceiro>();
@@ -409,7 +419,7 @@ namespace IndicaLMR.Classes
 
                 MySqlCommand query = new MySqlCommand("SELECT indicado FROM indicacao WHERE parceiro = @parceiro LIMIT @tamanhoPagina OFFSET @offset", con);
                 query.Parameters.AddWithValue("@parceiro", parceiro);
-                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
+                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -433,7 +443,17 @@ namespace IndicaLMR.Classes
             {
                 indicacoes.Clear();
             }
-            return indicacoes;
+
+            bool temMais = tamanhoPagina < indicacoes.Count ? true : false;
+            if (indicacoes.Count > tamanhoPagina) { indicacoes.RemoveAt(indicacoes.Count - 1); };
+
+            ParceirosDTO parceirosDTO = new ParceirosDTO
+            {
+                Parceiros = indicacoes,
+                TemMais = temMais
+            };
+
+            return parceirosDTO;
         }
 
         public static bool MudarStatus(int id)
@@ -890,9 +910,15 @@ namespace IndicaLMR.Classes
         }
     }
 
-    public class ParceiroDTO
+    public class ParceiroDTO()
     {
         public bool? NovoParceiro { get; set; }
         public int? Id { get; set; }
+    }
+
+    public class ParceirosDTO
+    {
+        public List<Parceiro> Parceiros { get; set; }
+        public bool TemMais { get; set; }
     }
 }

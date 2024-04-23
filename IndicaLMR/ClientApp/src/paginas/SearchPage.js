@@ -16,7 +16,10 @@ function SearchPage() {
         parceiro: false,
         transacao: true
     });
-    const [lista, setLista] = useState(null);
+    const [dados, setDados] = useState({
+        lista: null,
+        temMais: null
+    });
     const [pagina, setPagina] = useState(1);
     const [tamPagina, setTamPagina] = useState(5);
     const [idParceiro, setIdParceiro] = useState(null);
@@ -44,11 +47,11 @@ function SearchPage() {
 
         var itens = modoPesquisa.transacao === true ? await fetch.listarTransacoesFiltro(pagina, tamanho, tipo, baixa, nome, cpf) : await fetch.listarParceiros(nome, cpf, tipoParceiro, pagina, tamanho);
         setTamPagina(tamanho)
-        setLista(itens);
+        setDados({ lista: modoPesquisa.transacao === true ? itens.transacoes : itens.parceiros, temMais: itens.temMais });
     }
 
     function alterarModo() {
-        setLista(null);
+        setDados({ lista: null, temMais: null });
         setPagina(1);
         setModoPesquisa({
             parceiro: !modoPesquisa.parceiro,
@@ -122,21 +125,21 @@ function SearchPage() {
                     </div>
                     <div className={style.resultados}>
                         <h1>{modoPesquisa.transacao === true ? "Transações" : "Indicadores"}</h1>
-                        {lista && lista.length > 0 ?
+                        {dados.lista && dados.lista.length > 0 ?
                             modoPesquisa.parceiro === true ?
-                                lista.map((parceiro) => (
+                                dados.lista.map((parceiro) => (
                                     <ItemParceiro parceiro={parceiro} exibir={atualizarId} abrirModal={abrirModal} />
                                 ))
-                                : lista.map((transacao) => (
+                                : dados.lista.map((transacao) => (
                                     <ItemParceiro transacao={transacao} atualizar={() => setAtualizar(!atualizar)} />
                                 )) : <p>Nenhum resultado encontrado</p>
                         }
                     </div>
-                    {lista && lista.length > 0 ?
+                    {dados.lista && dados.lista.length > 0 ?
                         <div className={style.controles}>
                             <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
                             <p>{pagina}</p>
-                            <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < tamPagina ? style.desabilitado : ""} onClick={() => lista && lista.length == tamPagina ? setPagina(pagina + 1) : ""} />
+                            <img src={recursos.getProximo()} alt="Próxima página" className={dados.temMais === false ? style.desabilitado : ""} onClick={() => dados.temMais === true ? setPagina(pagina + 1) : ""} />
                         </div>
                         : ""}
                 </div>

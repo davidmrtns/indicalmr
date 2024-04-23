@@ -108,7 +108,7 @@ namespace IndicaLMR.Classes
             } 
         }
 
-        public static List<Transacao> ListarTransacoes(int parceiro, int pagina, int tamanhoPagina)
+        public static TransacoesDTO ListarTransacoes(int parceiro, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Transacao> transacoes = new List<Transacao>();
@@ -120,7 +120,7 @@ namespace IndicaLMR.Classes
 
                 MySqlCommand query = new MySqlCommand("SELECT transacao.valor, transacao.tipo, data, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
                 query.Parameters.AddWithValue("@parceiro", parceiro);
-                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
+                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -151,10 +151,20 @@ namespace IndicaLMR.Classes
             {
                 transacoes.Clear();
             }
-            return transacoes;
+
+            bool temMais = tamanhoPagina < transacoes.Count ? true : false;
+            if (transacoes.Count > tamanhoPagina) { transacoes.RemoveAt(transacoes.Count - 1); };
+
+            TransacoesDTO transacoesDto = new TransacoesDTO
+            {
+                Transacoes = transacoes,
+                TemMais = temMais
+            };
+
+            return transacoesDto;
         }
 
-        public static List<Transacao> ListarTransacoesFiltro(int pagina, int tamanhoPagina, int? tipo, bool? baixa, string? nome, string? cpf)
+        public static TransacoesDTO ListarTransacoesFiltro(int pagina, int tamanhoPagina, int? tipo, bool? baixa, string? nome, string? cpf)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Transacao> transacoes = new List<Transacao>();
@@ -220,7 +230,7 @@ namespace IndicaLMR.Classes
                 query.Parameters.AddWithValue("@tipo", tipo);
                 query.Parameters.AddWithValue("@nome", nome);
                 query.Parameters.AddWithValue("@cpf", cpf);
-                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
+                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -254,10 +264,20 @@ namespace IndicaLMR.Classes
             {
                 transacoes.Clear();
             }
-            return transacoes;
+
+            bool temMais = tamanhoPagina < transacoes.Count ? true : false;
+            if (transacoes.Count > tamanhoPagina) { transacoes.RemoveAt(transacoes.Count - 1); };
+
+            TransacoesDTO transacoesDto = new TransacoesDTO
+            { 
+                Transacoes = transacoes,
+                TemMais = temMais
+            };
+
+            return transacoesDto;
         }
 
-        public static List<Transacao> ListarTransacoesPorParceiro(int parceiro, int pagina, int tamanhoPagina)
+        public static TransacoesDTO ListarTransacoesPorParceiro(int parceiro, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Transacao> transacoes = new List<Transacao>();
@@ -269,7 +289,7 @@ namespace IndicaLMR.Classes
 
                 MySqlCommand query = new MySqlCommand("SELECT transacao.id, transacao.valor, transacao.tipo, data, baixa, premio.nome FROM transacao LEFT JOIN premio ON transacao.premio = premio.id WHERE parceiro = @parceiro ORDER BY data DESC LIMIT @tamanhoPagina OFFSET @offset", con);
                 query.Parameters.AddWithValue("@parceiro", parceiro);
-                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina);
+                query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -302,7 +322,17 @@ namespace IndicaLMR.Classes
             {
                 transacoes.Clear();
             }
-            return transacoes;
+
+            bool temMais = tamanhoPagina < transacoes.Count ? true : false;
+            if (transacoes.Count > tamanhoPagina) { transacoes.RemoveAt(transacoes.Count - 1); };
+
+            TransacoesDTO transacoesDto = new TransacoesDTO
+            {
+                Transacoes = transacoes,
+                TemMais = temMais
+            };
+
+            return transacoesDto;
         }
 
         public static bool MudarStatus(int id)
@@ -327,5 +357,11 @@ namespace IndicaLMR.Classes
                 return false;
             }
         }
+    }
+
+    public class TransacoesDTO
+    {
+        public List<Transacao> Transacoes { get; set; }
+        public bool TemMais {  get; set; }
     }
 }

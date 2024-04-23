@@ -499,11 +499,11 @@
         return resposta;
     }
 
-    async listarCobrancas() {
+    async listarCobrancas(pagina) {
         var resposta;
 
         try {
-            await fetch('api/asaas', {
+            await fetch('api/asaas?pagina=' + pagina, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'

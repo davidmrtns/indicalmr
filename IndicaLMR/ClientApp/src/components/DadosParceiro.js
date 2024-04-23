@@ -15,7 +15,10 @@ function DadosParceiro({ id, fechar }) {
     const [parceiro, setParceiro] = useState(null);
     const [atualizar, setAtualizar] = useState(false);
     const [atualizarParceiro, setAtualizarParceiro] = useState(false);
-    const [lista, setLista] = useState(null);
+    const [dados, setDados] = useState({
+        lista: null,
+        temMais: null
+    });
     const [pagina, setPagina] = useState(1);
     const [exibirModal, setExibirModal] = useState(false);
     const [qtdIndicacoes, setQtdIndicacoes] = useState({
@@ -71,9 +74,9 @@ function DadosParceiro({ id, fechar }) {
         const buscarDados = async () => {
             if (id) {
                 var itens = parceiro.tipo === 0 ? await fetch.listarTransacoesPorParceiro(id, pagina) : await fetch.listarIndicacoesPorId(id, pagina);
-                setLista(itens);
+                setDados({ lista: parceiro.tipo === 0 ? itens.transacoes : itens.parceiros, temMais: itens.temMais });
             } else {
-                setLista(null);
+                setDados({ lista: null, temMais: null });
             }
         }
         buscarDados();
@@ -129,8 +132,8 @@ function DadosParceiro({ id, fechar }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lista && lista.length > 0 ?
-                                        lista.map((transacao) => (
+                                    {dados.lista && dados.lista.length > 0 ?
+                                        dados.lista.map((transacao) => (
                                             <tr>
                                                 <td>{utils.formatarData(transacao.data)}</td>
                                                 <td>R$ {transacao.valor}</td>
@@ -148,7 +151,7 @@ function DadosParceiro({ id, fechar }) {
                                 <div>
                                     <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
                                     <p>{pagina}</p>
-                                    <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < 5 ? style.desabilitado : ""} onClick={() => lista && lista.length === 5 ? setPagina(pagina + 1) : ""} />
+                                    <img src={recursos.getProximo()} alt="Próxima página" className={dados.temMais === false ? style.desabilitado : ""} onClick={() => dados.temMais === true ? setPagina(pagina + 1) : ""} />
                                 </div>
                             </div>
                         </div>
@@ -166,8 +169,8 @@ function DadosParceiro({ id, fechar }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lista && lista.length > 0 ?
-                                        lista.map((indicacao) => (
+                                    {dados.lista && dados.lista.length > 0 ?
+                                        dados.lista.map((indicacao) => (
                                             <tr>
                                                 <td>{indicacao.nome}</td>
                                                 <td>{indicacao.cpf ? <InputMask mask="999.999.999-99" disabled type="text" value={indicacao.cpf} /> : "[Sem CPF]"}</td>
@@ -186,7 +189,7 @@ function DadosParceiro({ id, fechar }) {
                                 <div>
                                     <img src={recursos.getAnterior()} alt="Página anterior" className={pagina === 1 ? style.desabilitado : ""} onClick={() => pagina > 1 ? setPagina(pagina - 1) : ""} />
                                     <p>{pagina}</p>
-                                    <img src={recursos.getProximo()} alt="Próxima página" className={lista && lista.length < 5 ? style.desabilitado : ""} onClick={() => lista && lista.length === 5 ? setPagina(pagina + 1) : ""} />
+                                    <img src={recursos.getProximo()} alt="Próxima página" className={dados.temMais === false ? style.desabilitado : ""} onClick={() => dados.temMais === true ? setPagina(pagina + 1) : ""} />
                                 </div>
                             </div>
                         </div>
