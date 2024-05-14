@@ -29,21 +29,19 @@ function UsersPage() {
     }, []);
 
     return (
-        <>
+        <div className={style.container}>
             <div>
-                <div>
-                    <h1 className={style.titulo}>Usuários</h1>
-                </div>
-                <div className={style.container}>
-                    <ItemUsuario adicionar={true} atualizar={atualizarLista} />
-                    {usuarios && usuarios.length > 0 ?
-                        usuarios.map((usuario) => (
-                            <ItemUsuario usuario={usuario} atualizar={atualizarLista} />
-                        ))
-                        : ""}
-                </div>
+                <h1 className={style.titulo}>Usuários</h1>
             </div>
-        </>
+            <div className={style.containeritens}>
+                <ItemUsuario adicionar={true} atualizar={atualizarLista} />
+                {usuarios && usuarios.length > 0 ?
+                    usuarios.map((usuario) => (
+                        <ItemUsuario usuario={usuario} atualizar={atualizarLista} />
+                    ))
+                    : ""}
+            </div>
+        </div>
     );
 }
 

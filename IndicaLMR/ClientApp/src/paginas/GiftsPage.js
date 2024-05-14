@@ -29,21 +29,19 @@ function GiftsPage() {
     }, []);
 
     return (
-        <>
+        <div className={style.container}>
             <div>
-                <div>
-                    <h1 className={style.titulo}>Prêmios</h1>
-                </div>
-                <div className={style.container}>
-                    <ItemPremio adicionar={true} atualizar={atualizarLista} />
-                    {premios && premios.length > 0 ?
-                        premios.map((premio) => (
-                            <ItemPremio premio={premio} atualizar={atualizarLista} />
-                        ))
-                    : ""}
-                </div>
+                <h1 className={style.titulo}>Prêmios</h1>
             </div>
-        </>
+            <div className={style.containeritens}>
+                <ItemPremio adicionar={true} atualizar={atualizarLista} />
+                {premios && premios.length > 0 ?
+                    premios.map((premio) => (
+                        <ItemPremio premio={premio} atualizar={atualizarLista} />
+                    ))
+                    : ""}
+            </div>
+        </div>
     );
 }
 

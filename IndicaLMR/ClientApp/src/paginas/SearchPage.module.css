@@ -7,13 +7,15 @@
     opacity: 40%;
 }
 
-div.container{
+div.container {
     display: flex;
     height: 100vh;
+    padding-top: 72px;
 }
 
 div.container div.caixapesquisa{
     width: 100%;
+    overflow-y: auto;
 }
 
 div.pesquisa{

@@ -21,6 +21,10 @@
     color: black;
 }
 
+div.container {
+    padding-top: 72px;
+}
+
 div.container h1{
     text-align: center;
     margin-top: 10px;

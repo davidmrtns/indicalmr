@@ -33,7 +33,7 @@ function SettingsPage() {
     }, []);
 
     return (
-        <>
+        <div className={style.container}>
             <h1 className={style.titulo}>Configurações</h1>
             <div className={style.configuracoes}>
                 {configuracoes && configuracoes.length > 0 ?
@@ -46,7 +46,7 @@ function SettingsPage() {
                     ))
                 : ""}
             </div>
-        </>
+        </div>
     );
 }
 
