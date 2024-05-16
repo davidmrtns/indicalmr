@@ -12,7 +12,7 @@ namespace IndicaLMR.Classes
         private string? indicadoPor;
         private int id, credito, tipo;
         private int? idParceiro;
-        private bool fechou, repassado;
+        private bool fechou, repassado, foiIndicado;
 
         public int Id { get { return id; } set {  id = value; } }
         public int? IdParceiro { get { return idParceiro; } set { idParceiro = value; } }
@@ -25,6 +25,7 @@ namespace IndicaLMR.Classes
         public int Tipo { get { return tipo; } set { tipo = value; } }
         public bool Fechou { get { return fechou; } set { fechou = value; } }
         public bool Repassado { get { return repassado; } set { repassado = value; } }
+        public bool FoiIndicado { get { return foiIndicado; } set { foiIndicado = value; } }
 
         [JsonConstructor]
         public Parceiro() { }
@@ -61,6 +62,16 @@ namespace IndicaLMR.Classes
             Telefone = telefone;
             Cpf = cpf;
             Tipo = tipo;
+        }
+        private Parceiro(int id, string nome, string telefone, string cpf, bool fechou, int tipo, bool foiIndicado)
+        {
+            Id = id;
+            Nome = nome;
+            Telefone = telefone;
+            Cpf = cpf;
+            Fechou = fechou;
+            Tipo = tipo;
+            FoiIndicado = foiIndicado;
         }
         public Parceiro(string nome, string telefone, string cpf, int tipo, string senha)
         {
@@ -311,7 +322,7 @@ namespace IndicaLMR.Classes
             return quantidade;
         }
 
-        public static ParceirosDTO ListarParceiros(string nome, string cpf, int? tipo, int pagina, int tamanhoPagina)
+        public static ParceirosDTO ListarParceiros(string nome, string cpf, int? tipo, int? indicado, int? fechou, int pagina, int tamanhoPagina)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
             List<Parceiro> parceiros = new List<Parceiro>();
@@ -331,7 +342,7 @@ namespace IndicaLMR.Classes
 
                 if (cpf != null)
                 {
-                    if (nome != null)
+                    if (filtro != "")
                     {
                         filtro += " AND cpf = @cpf";
                     }
@@ -343,16 +354,9 @@ namespace IndicaLMR.Classes
 
                 if (tipo != null)
                 {
-                    if (cpf != null)
+                    if (filtro != "")
                     {
-                        if (nome != null)
-                        {
-                            filtro += " AND tipo = @tipo";
-                        }
-                        else
-                        {
-                            filtro += " AND tipo = @tipo";
-                        }
+                        filtro += " AND tipo = @tipo";
                     }
                     else
                     {
@@ -360,10 +364,35 @@ namespace IndicaLMR.Classes
                     }
                 }
 
-                MySqlCommand query = new MySqlCommand(string.Format("SELECT id, nome, telefone, cpf, tipo FROM parceiro {0} LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
+                if (indicado != null && indicado == 1)
+                {
+                    if (filtro != "")
+                    {
+                        filtro += " AND (SELECT id FROM indicacao WHERE indicado = parceiro.id)";
+                    }
+                    else
+                    {
+                        filtro += "WHERE (SELECT id FROM indicacao WHERE indicado = parceiro.id)";
+                    }
+                }
+
+                if (fechou != null)
+                {
+                    if (filtro != "")
+                    {
+                        filtro += " AND fechou = @fechou";
+                    }
+                    else
+                    {
+                        filtro += "WHERE fechou = @fechou";
+                    }
+                }
+
+                MySqlCommand query = new MySqlCommand(string.Format("SELECT id, nome, telefone, cpf, tipo, fechou, (CASE WHEN(SELECT id FROM indicacao WHERE indicado = parceiro.id LIMIT 1) IS NOT NULL THEN true ELSE false END) AS foi_indicado FROM parceiro {0} LIMIT @tamanhoPagina OFFSET @offset", filtro), con);
                 query.Parameters.AddWithValue("@nome", nome);
                 query.Parameters.AddWithValue("@cpf", cpf);
                 query.Parameters.AddWithValue("@tipo", tipo);
+                query.Parameters.AddWithValue("@fechou", fechou);
                 query.Parameters.AddWithValue("@tamanhoPagina", tamanhoPagina + 1);
                 query.Parameters.AddWithValue("@offset", offset);
 
@@ -378,7 +407,9 @@ namespace IndicaLMR.Classes
                             leitor["nome"].ToString(),
                             leitor["telefone"].ToString(),
                             leitor["cpf"].ToString(),
-                            (int)leitor["tipo"]
+                            (bool)leitor["fechou"],
+                            (int)leitor["tipo"],
+                            Convert.ToBoolean(leitor["foi_indicado"])
                             );
                         parceiros.Add(parceiro);
                     }

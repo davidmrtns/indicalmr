@@ -435,11 +435,11 @@
         return resposta;
     }
 
-    async listarParceiros(nome, cpf, tipo, pagina, tamPagina) {
+    async listarParceiros(nome, cpf, tipo, fechou, foiIndicado, pagina, tamPagina) {
         var resposta;
 
         try {
-            await fetch('api/listar-parceiros/?nome=' + nome + '&cpf=' + cpf + '&tipo=' + tipo + '&pagina=' + pagina + '&tamanhoPagina=' + tamPagina, {
+            await fetch('api/listar-parceiros/?nome=' + nome + '&cpf=' + cpf + '&tipo=' + tipo + '&fechou=' + fechou + '&indicado=' + foiIndicado + '&pagina=' + pagina + '&tamanhoPagina=' + tamPagina, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'

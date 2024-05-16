@@ -429,11 +429,11 @@ namespace IndicaLMR.Controllers
         [Authorize(Policy = "Admin")]
         [HttpGet("listar-parceiros")]
 
-        public IActionResult ListarParceiros([FromQuery] int pagina, [FromQuery] int tamanhoPagina, [FromQuery] string? nome = null, [FromQuery] string? cpf = null, [FromQuery] int? tipo = null)
+        public IActionResult ListarParceiros([FromQuery] int pagina, [FromQuery] int tamanhoPagina, [FromQuery] string? nome = null, [FromQuery] string? cpf = null, [FromQuery] int? tipo = null, [FromQuery] int? indicado = null, [FromQuery] int? fechou = null)
         {
             try
             {
-                ParceirosDTO parceiros = Parceiro.ListarParceiros(nome, cpf, tipo, pagina, tamanhoPagina);
+                ParceirosDTO parceiros = Parceiro.ListarParceiros(nome, cpf, tipo, indicado, fechou, pagina, tamanhoPagina);
                 return Ok(parceiros);
             }
             catch

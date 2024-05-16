@@ -40,7 +40,7 @@ class Utils {
 
     validarSenha(senha, metodo) {
         if (metodo === 0) {
-            return senha.length >= 8 ? true : false;
+            return senha.length >= 6 ? true : false;
         }
 
         if (metodo === 1) {

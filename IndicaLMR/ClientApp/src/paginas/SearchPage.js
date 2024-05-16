@@ -42,10 +42,12 @@ function SearchPage() {
         var cpf = document.getElementById("cpf").value.replace(/[.\-_]/g, '');
         var tipo = modoPesquisa.transacao === true ? (document.getElementById("tipo").value === '-' ? '' : document.getElementById("tipo").value) : "";
         var tipoParceiro = modoPesquisa.parceiro === true ? (document.getElementById("tipoParceiro").value === '-' ? '' : document.getElementById("tipoParceiro").value) : "";
+        var fechou = modoPesquisa.parceiro === true ? (document.getElementById("fechou").value === '-' ? '' : document.getElementById("fechou").value) : "";
+        var foiIndicado = modoPesquisa.parceiro === true ? (document.getElementById("foiIndicado").value === '-' ? '' : document.getElementById("foiIndicado").value) : "";
         var baixa = modoPesquisa.transacao === true ? (document.getElementById("baixa").value == 0 ? 'false' : document.getElementById("baixa").value == 1 ? 'true' : '') : "";
         var tamanho = document.getElementById("tamPagina").value;
 
-        var itens = modoPesquisa.transacao === true ? await fetch.listarTransacoesFiltro(pagina, tamanho, tipo, baixa, nome, cpf) : await fetch.listarParceiros(nome, cpf, tipoParceiro, pagina, tamanho);
+        var itens = modoPesquisa.transacao === true ? await fetch.listarTransacoesFiltro(pagina, tamanho, tipo, baixa, nome, cpf) : await fetch.listarParceiros(nome, cpf, tipoParceiro, fechou, foiIndicado, pagina, tamanho);
         setTamPagina(tamanho)
         setDados({ lista: modoPesquisa.transacao === true ? itens.transacoes : itens.parceiros, temMais: itens.temMais });
     }
@@ -87,12 +89,30 @@ function SearchPage() {
                         {modoPesquisa.parceiro === true ?
                            <div>
                                 <select id="tipoParceiro">
-                                    <option selected value="-">Todos</option>
-                                    <option value="0">Indicador</option>
+                                    <option value="-">Todos</option>
+                                    <option selected value="0">Indicador</option>
                                     <option value="1">Parceiro</option>
                                 </select>
                            </div>
-                        : ""}
+                            : ""}
+                        {modoPesquisa.parceiro === true ?
+                            <div>
+                                <select id="fechou">
+                                    <option value="-">Todos</option>
+                                    <option selected value="0">Não fechou</option>
+                                    <option value="1">Fechou</option>
+                                </select>
+                            </div>
+                            : ""}
+                        {modoPesquisa.parceiro === true ?
+                            <div>
+                                <select id="foiIndicado">
+                                    <option selected value="-">Indiferente</option>
+                                    <option value="0">Não foi indicado</option>
+                                    <option selected value="1">Foi indicado</option>
+                                </select>
+                            </div>
+                            : ""}
                         {modoPesquisa.transacao === true ?
                             <div>
                                 <select id="tipo">

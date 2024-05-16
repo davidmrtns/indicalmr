@@ -29,10 +29,6 @@ function Login() {
     const [valCpf, setValCpf] = useState(false);
     const [valSenha, setValSenha] = useState({
         minCaract: false,
-        caractEspec: false,
-        minNum: false,
-        minMinusc: false,
-        minMaiusc: false,
         confirmacao: null
     });
 
@@ -65,11 +61,7 @@ function Login() {
 
     function validarSenha() {
         setValSenha({
-            minCaract: utils.validarSenha(senha, 0),
-            caractEspec: utils.validarSenha(senha, 1),
-            minNum: utils.validarSenha(senha, 2),
-            minMinusc: utils.validarSenha(senha, 3),
-            minMaiusc: utils.validarSenha(senha, 4)
+            minCaract: utils.validarSenha(senha, 0)
         });
     }
 
@@ -169,12 +161,17 @@ function Login() {
                 resultado = await fetch.cadastrarParceiro(document.getElementById('nome').value, document.getElementById('celular').value.replace(/[()\-_ ]/g, ''), cpf.replace(/[.\-_]/g, ''), senha);
             }
 
-            if (resultado.status === 200) {
+            var codigo = resultado.clone().status;
+            var resposta = await resultado.json().then((data) => { return data });
+
+            if (codigo === 200 && resposta === true) {
                 window.location.href = "/";
-            } else if (resultado.status === 400) {
+            } else if (codigo === 400) {
                 setMensagem('Um erro ocorreu. Tente novamente');
-                setEnviado(false);
+            } else {
+                setMensagem('Esse CPF já está sendo usado');
             }
+            setEnviado(false);
         } else {
             setMensagem('Preencha os campos corretamente!');
             setEnviado(false);
@@ -209,13 +206,9 @@ function Login() {
                                                 {senha ?
                                                     <div className={style.requisitos}>
                                                         <h5>Sua senha deve conter:</h5>
-                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
-                                                        <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
-                                                        <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
-                                                        <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
-                                                        <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 6 caracteres</p>
                                                     </div>
-                                                : ""}
+                                                 : ""}
                                             </div>
                                             <div className={style.campo}>
                                                 <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
@@ -246,11 +239,7 @@ function Login() {
                                                 {senha ?
                                                     <div className={style.requisitos}>
                                                         <h5>Sua senha deve conter:</h5>
-                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
-                                                        <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
-                                                        <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
-                                                        <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
-                                                        <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                                        <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 6 caracteres</p>
                                                     </div>
                                                 : ""}
                                             </div>
