@@ -49,6 +49,13 @@ div.premio input::placeholder{
     opacity: 0.6;
 }
 
+div.imagempremio img {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
 div.edicao{
     flex-direction: column;
 }

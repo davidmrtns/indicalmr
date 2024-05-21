@@ -13,22 +13,40 @@ div.premio p{
     color: white;
 }
 
-div.premio div{
+div.premio div.itens{
     display: flex;
 }
 
-div.premio div.nome{
+div.premio div.itens div{
+    width: 50%;
+}
+
+div.premio div.dados p.nome{
     font-weight: bold;
     font-size: 20px;
     justify-content: space-between;
 }
 
-div.premio div.nome p.valor{
-    font-weight: normal;
+div.premio div.dados p.valor{
+    opacity: 85%;
 }
 
-div.premio div.descricao p{
-    width: 100%;
+div.premio div.dados p.descricao{
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+div.premio div.imagem{
+    display: flex;
+    justify-content: flex-end;
+}
+
+div.premio div.imagem img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 20px;
+    padding: 5px;
 }
 
 div.premio div.divacao{

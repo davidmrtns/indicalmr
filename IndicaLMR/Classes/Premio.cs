@@ -5,21 +5,23 @@ namespace IndicaLMR.Classes
     public class Premio
     {
         private int id, valor;
-        private string nome, descricao;
+        private string nome, descricao, imagem;
         private bool disponivel;
 
         public int Id { get { return id; } set {  id = value; } }
         public int Valor { get { return valor; } set {  valor = value; } }
         public string Nome { get {  return nome; } set {  nome = value; } }
         public string Descricao { get {  return descricao; } set {  descricao = value; } }
+        public string Imagem { get {  return imagem; } set {  imagem = value; } }
         public bool Disponivel { get {  return disponivel; } set {  disponivel = value; } }
 
-        public Premio(int id, string nome, string descricao, int valor, bool disponivel)
+        public Premio(int id, string nome, string descricao, int valor, string imagem, bool disponivel)
         {
             Id = id;
             Nome = nome;
             Descricao = descricao;
             Valor = valor;
+            Imagem = imagem;
             Disponivel = disponivel;
         }
 
@@ -31,11 +33,12 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("INSERT INTO premio VALUES(@id, @nome, @valor, @descricao, @disponivel)", con);
+                MySqlCommand query = new MySqlCommand("INSERT INTO premio VALUES(@id, @nome, @valor, @descricao, @imagem, @disponivel)", con);
                 query.Parameters.AddWithValue("@id", Id);
                 query.Parameters.AddWithValue("@nome", Nome);
                 query.Parameters.AddWithValue("@valor", Valor);
                 query.Parameters.AddWithValue("@descricao", Descricao);
+                query.Parameters.AddWithValue("@imagem", Imagem);
                 query.Parameters.AddWithValue("@disponivel", Disponivel);
 
                 query.ExecuteNonQuery();
@@ -83,6 +86,14 @@ namespace IndicaLMR.Classes
                     query.ExecuteNonQuery();
                 }
 
+                if (Imagem != premioNovo.Imagem && premioNovo.Imagem != "")
+                {
+                    MySqlCommand query = new MySqlCommand("UPDATE premio SET imagem = @imagem WHERE id = @id", con);
+                    query.Parameters.AddWithValue("@imagem", premioNovo.Imagem);
+                    query.Parameters.AddWithValue("@id", premioNovo.Id);
+                    query.ExecuteNonQuery();
+                }
+
                 if (Disponivel != premioNovo.Disponivel)
                 {
                     MySqlCommand query = new MySqlCommand("UPDATE premio SET disponivel = @disponivel WHERE id = @id", con);
@@ -103,6 +114,7 @@ namespace IndicaLMR.Classes
                             leitor["nome"].ToString(),
                             leitor["descricao"].ToString(),
                             (int)leitor["valor"],
+                            leitor["imagem"].ToString(),
                             (bool)leitor["disponivel"]
                             );
                     }
@@ -138,6 +150,7 @@ namespace IndicaLMR.Classes
                             leitor["nome"].ToString(),
                             leitor["descricao"].ToString(),
                             (int)leitor["valor"],
+                            leitor["imagem"].ToString(),
                             (bool)leitor["disponivel"]
                             );
 
@@ -175,6 +188,7 @@ namespace IndicaLMR.Classes
                             leitor["nome"].ToString(),
                             leitor["descricao"].ToString(),
                             (int)leitor["valor"],
+                            leitor["imagem"].ToString(),
                             (bool)leitor["disponivel"]
                             );
 

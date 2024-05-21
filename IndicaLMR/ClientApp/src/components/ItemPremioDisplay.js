@@ -48,12 +48,15 @@ function ItemPremioDisplay({ premio, verificar, selecionar, definirId, desseleci
     return (
         <>
             <div className={premioSelecionado === true ? styles.premio + " " + styles.selecionado : styles.premio} onClick={() => selecionarPremio()}>
-                <div className={styles.nome}>
-                    <p>{premio.nome}</p>
-                    <p className={styles.valor}>{premio.valor} pontos</p>
-                </div>
-                <div className={styles.descricao}>
-                    <p>{premio.descricao}</p>
+                <div className={styles.itens}>
+                    <div className={styles.dados}>
+                        <p className={styles.nome}>{premio.nome}</p>
+                        <p className={styles.valor}>{premio.valor} pontos</p>
+                        <p className={styles.descricao}>{premio.descricao}</p>
+                    </div>
+                    <div className={styles.imagem}>
+                        <img src={premio.imagem} />
+                    </div>
                 </div>
             </div>
         </>

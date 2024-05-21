@@ -621,7 +621,7 @@
         return resposta;
     }
 
-    async criarPremio(nome, valor, descricao, disponivel) {
+    async criarPremio(nome, valor, descricao, imagem, disponivel) {
         var resposta;
 
         try {
@@ -635,6 +635,7 @@
                     nome: nome,
                     valor: valor,
                     descricao: descricao,
+                    imagem: imagem,
                     disponivel: disponivel
                 })
             }).then((response) => response.json()).then((data) => { resposta = data });
@@ -644,7 +645,7 @@
         return resposta;
     }
 
-    async editarPremio(id, nome, valor, descricao, disponivel, premioAntigo) {
+    async editarPremio(id, nome, valor, descricao, imagem, disponivel, premioAntigo) {
         var resposta;
 
         try {
@@ -658,6 +659,7 @@
                     nome: nome,
                     valor: valor,
                     descricao: descricao,
+                    imagem: imagem,
                     disponivel: disponivel,
                     premioAntigo: premioAntigo
                 })

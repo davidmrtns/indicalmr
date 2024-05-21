@@ -12,13 +12,14 @@ function ItemPremio({ adicionar, premio, atualizar }) {
     const [mensagemModal, setMensagemModal] = useState(null);
 
     async function criar() {
-        var nome = document.getElementById("nome").value;
+        var nome = document.getElementById("nome").value.trim();
         var valor = document.getElementById("valor").value;
         var disponivel = document.getElementById("disponibilidade").value === "true" ? true : false;
         var descricao = document.getElementById("descricao").value;
+        var imagem = document.getElementById("imagem").value.trim();
 
-        if (nome && valor && disponivel && descricao) {
-            var resposta = await fetch.criarPremio(nome, valor, descricao, disponivel);
+        if (nome && valor && disponivel && descricao && imagem) {
+            var resposta = await fetch.criarPremio(nome, valor, descricao, imagem, disponivel);
             if (resposta) {
                 atualizar();
                 setEdicao(false);
@@ -33,13 +34,14 @@ function ItemPremio({ adicionar, premio, atualizar }) {
 
     async function editar() {
         var id = premio.id;
-        var nome = document.getElementById("nome").value;
+        var nome = document.getElementById("nome").value.trim();
         var valor = document.getElementById("valor").value;
         var disponivel = document.getElementById("disponibilidade").value === "true" ? true : false;
         var descricao = document.getElementById("descricao").value;
+        var imagem = document.getElementById("imagem").value.trim();
 
-        if (nome && valor && disponivel !== null && descricao) {
-            var resposta = await fetch.editarPremio(id, nome, valor, descricao, disponivel, premio);
+        if (nome && valor && disponivel !== null && descricao && imagem) {
+            var resposta = await fetch.editarPremio(id, nome, valor, descricao, imagem, disponivel, premio);
             if (resposta) {
                 atualizar();
                 setEdicao(false);
@@ -88,6 +90,9 @@ function ItemPremio({ adicionar, premio, atualizar }) {
                             <input id="valor" placeholder="Valor do prêmio (pontos)" type="number" />
                         </div>
                         <div>
+                            <input id="imagem" placeholder="URL da imagem" type="text" />
+                        </div>
+                        <div>
                             <select id="disponibilidade">
                                 <option value="true">Disponível</option>
                                 <option value="false">Indisponível</option>
@@ -121,6 +126,9 @@ function ItemPremio({ adicionar, premio, atualizar }) {
                     <div>
                         <p>{premio.disponivel === true ? "Disponível" : "Indisponível"}</p>
                     </div>
+                    <div className={styles.imagempremio}>
+                        <img src={premio.imagem} width="150" />
+                    </div>
                     <div className={styles.divacao}>
                         <p><FontAwesomeIcon className={styles.acao} icon={faPencil} onClick={() => setEdicao(!edicao)} /></p>
                         <p><FontAwesomeIcon className={styles.acao} icon={faTrash} onClick={() => setExibirModal(true)} /></p>
@@ -145,6 +153,9 @@ function ItemPremio({ adicionar, premio, atualizar }) {
                     </div>
                     <div>
                         <input id="valor" placeholder="Valor do prêmio" type="number" defaultValue={premio.valor} />
+                    </div>
+                    <div>
+                        <input id="imagem" placeholder="URL da imagem" type="text" defaultValue={premio.imagem} />
                     </div>
                     <div>
                         <select id="disponibilidade">

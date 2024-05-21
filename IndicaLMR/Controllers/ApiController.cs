@@ -501,7 +501,7 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                Premio premio = new Premio(premioModel.Id, premioModel.Nome, premioModel.Descricao, premioModel.Valor, premioModel.Disponivel);
+                Premio premio = new Premio(premioModel.Id, premioModel.Nome, premioModel.Descricao, premioModel.Valor, premioModel.Imagem, premioModel.Disponivel);
                 return Ok(premio.CriarPremio());
             }
             catch
@@ -518,9 +518,9 @@ namespace IndicaLMR.Controllers
             {
                 Premio premioAntigo = new Premio(premioModel.premioAntigo.Id, 
                     premioModel.premioAntigo.Nome, premioModel.premioAntigo.Descricao, 
-                    premioModel.premioAntigo.Valor, premioModel.premioAntigo.Disponivel);
+                    premioModel.premioAntigo.Valor, premioModel.premioAntigo.Imagem, premioModel.premioAntigo.Disponivel);
 
-                Premio premioNovo = new Premio(premioModel.Id, premioModel.Nome, premioModel.Descricao, premioModel.Valor, premioModel.Disponivel);
+                Premio premioNovo = new Premio(premioModel.Id, premioModel.Nome, premioModel.Descricao, premioModel.Valor, premioModel.Imagem, premioModel.Disponivel);
                 
                 Premio premioAtualizado = premioAntigo.AlterarPremio(premioNovo);
                 return Ok(premioAtualizado);
