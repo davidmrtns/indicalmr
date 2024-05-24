@@ -20,10 +20,6 @@ function EditarDados({ id }) {
     const [confirmacao, setConfirmacao] = useState(null);
     const [valSenha, setValSenha] = useState({
         minCaract: false,
-        caractEspec: false,
-        minNum: false,
-        minMinusc: false,
-        minMaiusc: false,
         confirmacao: null
     });
 
@@ -52,11 +48,7 @@ function EditarDados({ id }) {
 
     function validarSenha() {
         setValSenha({
-            minCaract: utils.validarSenha(senha, 0),
-            caractEspec: utils.validarSenha(senha, 1),
-            minNum: utils.validarSenha(senha, 2),
-            minMinusc: utils.validarSenha(senha, 3),
-            minMaiusc: utils.validarSenha(senha, 4)
+            minCaract: utils.validarSenha(senha, 0)
         });
     }
 
@@ -132,11 +124,7 @@ function EditarDados({ id }) {
                         {editarSenha ?
                             <div className={style.requisitos}>
                                 <h5>Sua senha deve conter:</h5>
-                                <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 8 caracteres</p>
-                                <p className={valSenha.caractEspec === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.caractEspec === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 caractere especial</p>
-                                <p className={valSenha.minNum === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minNum === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 número</p>
-                                <p className={valSenha.minMinusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMinusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra minúscula</p>
-                                <p className={valSenha.minMaiusc === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minMaiusc === true ? faCircleCheck : faCircleXmark} /> No mínimo 1 letra maiúscula</p>
+                                <p className={valSenha.minCaract === true ? style.valido : style.invalido}><FontAwesomeIcon icon={valSenha.minCaract === true ? faCircleCheck : faCircleXmark} /> No mínimo 6 caracteres</p>
                             </div>
                         : ""}
                         {editarSenha === true ?
