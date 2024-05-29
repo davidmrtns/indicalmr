@@ -3,7 +3,7 @@ import style from './EditarDados.module.css';
 import Fetch from '../classes/Fetch';
 import InputMask from "react-input-mask";
 import Utils from "../classes/Utils";
-import { faPencil, faTrash, faCheck, faFloppyDisk, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faTrash, faCheck, faFloppyDisk, faCircleCheck, faCircleXmark, faEye, faEyeSlash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ModalConfirmacao from './ModalConfirmacao';
 
@@ -18,6 +18,7 @@ function EditarDados({ id }) {
     const [editarSenha, setEditarSenha] = useState(false);
     const [senha, setSenha] = useState(null);
     const [confirmacao, setConfirmacao] = useState(null);
+    const [exibirSenha, setExibirSenha] = useState(false);
     const [valSenha, setValSenha] = useState({
         minCaract: false,
         confirmacao: null
@@ -54,6 +55,15 @@ function EditarDados({ id }) {
 
     function confirmarSenha() {
         confirmacao === senha ? setValSenha({ ...valSenha, confirmacao: true }) : setValSenha({ ...valSenha, confirmacao: false });
+    }
+
+    const exibirEdicaoSenha = () => {
+        if (!editarSenha === false) {
+            document.getElementById("senha").value = "";
+            setConfirmacao(null);
+            //document.getElementById("confirmacaoSenha").value = "";
+        }
+        setEditarSenha(!editarSenha)
     }
 
     const excluir = async () => {
@@ -118,8 +128,9 @@ function EditarDados({ id }) {
                             <p className={style.editardado}><FontAwesomeIcon icon={editarCelular === false ? faPencil : faCheck} onClick={() => setEditarCelular(!editarCelular)} /></p>
                         </div>
                         <div className={style.campo}>
-                            <input type="password" placeholder={editarSenha === false ? "•••••••••••••••" : "Senha"} disabled={!editarSenha} id="senha" onChange={(e) => setSenha(e.target.value)} />
-                            <p className={style.editardado}><FontAwesomeIcon icon={editarSenha === false ? faPencil : faCheck} onClick={() => setEditarSenha(!editarSenha)} /></p>
+                            <input type={exibirSenha === false ? "password" : "text"} placeholder={editarSenha === false ? "•••••••••••••••" : "Senha"} disabled={!editarSenha} id="senha" onChange={(e) => setSenha(e.target.value)} />
+                            <p className={style.editardado}><FontAwesomeIcon icon={editarSenha === false ? faPencil : faXmark} onClick={() => exibirEdicaoSenha()} /></p>
+                            {editarSenha === true ? <p className={style.editardado}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p> : "" }
                         </div>
                         {editarSenha ?
                             <div className={style.requisitos}>
@@ -130,7 +141,8 @@ function EditarDados({ id }) {
                         {editarSenha === true ?
                             <>
                                 <div className={style.campo}>
-                                    <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} defaultValue={confirmacao} />
+                                    <input placeholder="Confirmação da senha" id="confirmacaoSenha" type={exibirSenha === false ? "password" : "text"} onChange={(e) => setConfirmacao(e.target.value)} defaultValue={confirmacao} />
+                                    <p className={style.editardado}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
                                 </div>
                                 {senha && valSenha.confirmacao !== null ?
                                     <div className={style.requisitos}>

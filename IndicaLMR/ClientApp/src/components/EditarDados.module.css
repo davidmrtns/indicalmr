@@ -70,6 +70,10 @@ p.editardado {
     cursor: pointer;
 }
 
+p.editardado + p{
+    margin-right: 23px;
+}
+
 button.salvardados {
     background: #0074b8 !important;
     color: white;

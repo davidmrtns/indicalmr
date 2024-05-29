@@ -4,7 +4,7 @@ import style from "./Cadastro.module.css";
 import Fetch from "../classes/Fetch";
 import Utils from "../classes/Utils";
 import InputMask from "react-input-mask";
-import { faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleXmark, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Login() {
@@ -26,6 +26,7 @@ function Login() {
     const [cpf, setCpf] = useState(null);
     const [senha, setSenha] = useState(null);
     const [confirmacao, setConfirmacao] = useState(null);
+    const [exibirSenha, setExibirSenha] = useState(false);
     const [valCpf, setValCpf] = useState(false);
     const [valSenha, setValSenha] = useState({
         minCaract: false,
@@ -202,7 +203,10 @@ function Login() {
                                                 : ""}
                                             </div>
                                             <div className={style.campo}>
-                                                <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />
+                                                <div className={style.campoexibirsenha}>
+                                                    <input placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} onChange={(e) => setSenha(e.target.value)} />
+                                                    <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                                                </div>
                                                 {senha ?
                                                     <div className={style.requisitos}>
                                                         <h5>Sua senha deve conter:</h5>
@@ -211,7 +215,10 @@ function Login() {
                                                  : ""}
                                             </div>
                                             <div className={style.campo}>
-                                                <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
+                                                <div className={style.campoexibirsenha}>
+                                                    <input placeholder="Confirmação da senha" id="confirmacaoSenha" type={exibirSenha === false ? "password" : "text"} onChange={(e) => setConfirmacao(e.target.value)} />
+                                                    <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                                                </div>
                                                 {senha && valSenha.confirmacao !== null ?
                                                     <div className={style.requisitos}>
                                                         {valSenha.confirmacao === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> As senhas são iguais</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> As senhas devem ser iguais</p>}
@@ -235,7 +242,10 @@ function Login() {
                                                 <InputMask mask="(99) 99999-9999" placeholder="Celular" id="celular" type="tel" />
                                             </div>
                                             <div className={style.campo}>
-                                                <input placeholder="Senha" id="senha" type="password" onChange={(e) => setSenha(e.target.value)} />
+                                                <div className={style.campoexibirsenha}>
+                                                    <input placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} onChange={(e) => setSenha(e.target.value)} />
+                                                    <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                                                </div>
                                                 {senha ?
                                                     <div className={style.requisitos}>
                                                         <h5>Sua senha deve conter:</h5>
@@ -244,7 +254,10 @@ function Login() {
                                                 : ""}
                                             </div>
                                             <div className={style.campo}>
-                                                <input placeholder="Confirmação da senha" id="confirmacaoSenha" type="password" onChange={(e) => setConfirmacao(e.target.value)} />
+                                                <div className={style.campoexibirsenha}>
+                                                    <input placeholder="Confirmação da senha" id="confirmacaoSenha" type={exibirSenha === false ? "password" : "text"} onChange={(e) => setConfirmacao(e.target.value)} />
+                                                    <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                                                </div>
                                                 {senha && valSenha.confirmacao !== null ?
                                                     <div className={style.requisitos}>
                                                         {valSenha.confirmacao === true ? <p className={style.valido}><FontAwesomeIcon icon={faCircleCheck} /> As senhas são iguais</p> : <p className={style.invalido}><FontAwesomeIcon icon={faCircleXmark} /> As senhas devem ser iguais</p>}
