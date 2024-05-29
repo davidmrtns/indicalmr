@@ -60,8 +60,9 @@ function EditarDados({ id }) {
     const exibirEdicaoSenha = () => {
         if (!editarSenha === false) {
             document.getElementById("senha").value = "";
+            setSenha(null);
             setConfirmacao(null);
-            //document.getElementById("confirmacaoSenha").value = "";
+            setValSenha({ minCaract: false, confirmacao: null });
         }
         setEditarSenha(!editarSenha)
     }
