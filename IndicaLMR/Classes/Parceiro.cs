@@ -37,12 +37,13 @@ namespace IndicaLMR.Classes
             Credito = 0;
             Fechou = false;
         }
-        public Parceiro(int id, string nome, string telefone, string cpf, bool fechou, int tipo, bool repassado, string? indicadoPor, int? idParceiro)
+        public Parceiro(int id, string nome, string telefone, string cpf, int credito, bool fechou, int tipo, bool repassado, string? indicadoPor, int? idParceiro)
         {
             Id = id;
             Nome = nome;
             Telefone = telefone;
             Cpf = cpf;
+            Credito = credito;
             Fechou = fechou;
             Tipo = tipo;
             Repassado = repassado;
@@ -244,7 +245,7 @@ namespace IndicaLMR.Classes
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT parceiro.id, nome, cpf, telefone, fechou, parceiro.tipo, repassado, (SELECT nome FROM parceiro WHERE parceiro.id = i.parceiro) AS indicado_por, i.parceiro FROM parceiro LEFT JOIN indicacao as i on i.indicado = parceiro.id WHERE parceiro.id = @id", con);
+                MySqlCommand query = new MySqlCommand("SELECT parceiro.id, nome, cpf, credito, telefone, fechou, parceiro.tipo, repassado, (SELECT nome FROM parceiro WHERE parceiro.id = i.parceiro) AS indicado_por, i.parceiro FROM parceiro LEFT JOIN indicacao as i on i.indicado = parceiro.id WHERE parceiro.id = @id", con);
                 query.Parameters.AddWithValue("@id", id);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -258,6 +259,7 @@ namespace IndicaLMR.Classes
                             leitor["nome"].ToString(),
                             leitor["telefone"].ToString(),
                             leitor["cpf"].ToString(),
+                            (int)leitor["credito"],
                             (bool)leitor["fechou"],
                             (int)leitor["tipo"],
                             (bool)leitor["repassado"],
