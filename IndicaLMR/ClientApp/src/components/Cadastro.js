@@ -153,26 +153,37 @@ function Login() {
     async function enviarSolicitacao() {
         setEnviado(true);
 
-        if (valCpf === true && valSenha.confirmacao === true) {
-            var resultado;
+        if (valCpf === true && valSenha.confirmacao === true && cpf !== null) {
+            var celular = document.getElementById("celular").value.replace(/[()\-_ ]/g, '');
+            var cpfFormatado = cpf.replace(/[.\-_]/g, '');
 
-            if (statusCadastro.cadastroIndicado) {
-                resultado = await fetch.atualizarDadosParceiro(idUsuario, cpf.replace(/[.\-_]/g, ''), senha);
+            if (celular === '' || celular.length < 11) {
+                setEnviado(false);
+                setMensagem("Digite um celular válido");
+            } else if (cpfFormatado === '' || cpf.length < 11) {
+                setEnviado(false);
+                setMensagem("Digite um CPF válido");
             } else {
-                resultado = await fetch.cadastrarParceiro(document.getElementById('nome').value, document.getElementById('celular').value.replace(/[()\-_ ]/g, ''), cpf.replace(/[.\-_]/g, ''), senha);
-            }
+                var resultado;
 
-            var codigo = resultado.clone().status;
-            var resposta = await resultado.json().then((data) => { return data });
+                if (statusCadastro.cadastroIndicado) {
+                    resultado = await fetch.atualizarDadosParceiro(idUsuario, cpfFormatado, senha);
+                } else {
+                    resultado = await fetch.cadastrarParceiro(document.getElementById('nome').value, celular, cpfFormatado, senha);
+                }
 
-            if (codigo === 200 && resposta === true) {
-                window.location.href = "/";
-            } else if (codigo === 400) {
-                setMensagem('Um erro ocorreu. Tente novamente');
-            } else {
-                setMensagem('Esse CPF já está sendo usado');
+                var codigo = resultado.clone().status;
+                var resposta = await resultado.json().then((data) => { return data });
+
+                if (codigo === 200 && resposta === true) {
+                    window.location.href = "/";
+                } else if (codigo === 400) {
+                    setMensagem('Um erro ocorreu. Tente novamente');
+                } else {
+                    setMensagem('Esse CPF já está sendo usado');
+                }
+                setEnviado(false);
             }
-            setEnviado(false);
         } else {
             setMensagem('Preencha os campos corretamente!');
             setEnviado(false);
