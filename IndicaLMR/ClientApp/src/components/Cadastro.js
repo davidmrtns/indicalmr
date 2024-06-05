@@ -85,6 +85,7 @@ function Login() {
 
     async function checarNovoParceiro() {
         setEnviado(true);
+        setMensagem(false);
 
         if (statusCadastro.cadastroIndicado) {
             var celular = document.getElementById("celular").value.replace(/[()\-_ ]/g, '');
@@ -152,6 +153,7 @@ function Login() {
 
     async function enviarSolicitacao() {
         setEnviado(true);
+        setMensagem(false);
 
         if (valCpf === true && valSenha.confirmacao === true && cpf !== null) {
             var celular = document.getElementById("celular").value.replace(/[()\-_ ]/g, '');
