@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Ocsp;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -166,10 +167,10 @@ namespace IndicaLMR.Classes
             }
         }
 
-        public static int VerificarParceiro(string cpf)
+        public static bool VerificarParceiro(string cpf)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
-            int id = 0;
+            int? id = null;
 
             try
             {
@@ -189,12 +190,20 @@ namespace IndicaLMR.Classes
                 }
 
                 con.Close();
+
+                if (id != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch
             {
-                id = 0;
+                return false;
             }
-            return id;
         }
 
         public static Parceiro BuscarParceiro(string cpf)
@@ -576,7 +585,7 @@ namespace IndicaLMR.Classes
             }
         }
 
-        public static bool AtualizarDados(int id, string cpf, string senha)
+        public static bool AtualizarDados(string telefone, string cpf, string senha)
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
 
@@ -589,10 +598,10 @@ namespace IndicaLMR.Classes
                 var hashedPassword = sha.ComputeHash(asByteArray);
                 string senhaHash = Convert.ToBase64String(hashedPassword);
 
-                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET cpf = @cpf, senha = @senha WHERE id = @id", con);
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET cpf = @cpf, senha = @senha WHERE telefone = @telefone", con);
                 query.Parameters.AddWithValue("@cpf", cpf);
                 query.Parameters.AddWithValue("@senha", senhaHash);
-                query.Parameters.AddWithValue("@id", id);
+                query.Parameters.AddWithValue("@telefone", telefone);
 
                 query.ExecuteNonQuery();
 
@@ -631,6 +640,37 @@ namespace IndicaLMR.Classes
             {
                 return false;
             }
+        }
+
+        public static bool RecuperarSenha(string cpf, string telefone, string senha)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+
+            try
+            {
+                con.Open();
+
+                var sha = SHA256.Create();
+                var asByteArray = Encoding.Default.GetBytes(senha);
+                var hashedPassword = sha.ComputeHash(asByteArray);
+                string senhaHash = Convert.ToBase64String(hashedPassword);
+
+                MySqlCommand query = new MySqlCommand("UPDATE parceiro SET senha = @senha WHERE cpf = @cpf AND telefone = @telefone", con);
+                query.Parameters.AddWithValue("@senha", senhaHash);
+                query.Parameters.AddWithValue("@cpf", cpf);
+                query.Parameters.AddWithValue("@telefone", telefone);
+
+                int linhas = query.ExecuteNonQuery();
+
+                con.Close();
+
+                return linhas > 0 ? true : false;
+            }
+            catch
+            {
+                return false;
+            }
+
         }
 
         public static int ConsultarCredito(int id)
@@ -741,17 +781,16 @@ namespace IndicaLMR.Classes
             }
         }
 
-        public static ParceiroDTO VerificarNovoParceiro(string telefone)
+        public static bool? VerificarNovoParceiro(string telefone)
         {
             bool? resposta;
-            int? id = null;
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
 
             try
             {
                 con.Open();
 
-                MySqlCommand query = new MySqlCommand("SELECT cpf, id FROM parceiro WHERE telefone = @telefone", con);
+                MySqlCommand query = new MySqlCommand("SELECT cpf FROM parceiro WHERE telefone = @telefone", con);
                 query.Parameters.AddWithValue("@telefone", telefone);
 
                 MySqlDataReader leitor = query.ExecuteReader();
@@ -763,7 +802,6 @@ namespace IndicaLMR.Classes
                     while (leitor.Read())
                     {
                         cpf = leitor["cpf"].ToString();
-                        id = (int)leitor["id"];
                     }
 
                     if (cpf == "")
@@ -787,13 +825,7 @@ namespace IndicaLMR.Classes
                 resposta = null;
             }
 
-            ParceiroDTO dto = new ParceiroDTO
-            {
-                NovoParceiro = resposta,
-                Id = id
-            };
-
-            return dto;
+            return resposta;
         }
 
         public static Parceiro Autenticar(string cpf, string senha)
@@ -916,6 +948,57 @@ namespace IndicaLMR.Classes
             }
         }
 
+        public static ParceiroDTO VerificarCadastroAlterarSenha(string cpf, string telefone)
+        {
+            MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
+            bool status = false; ;
+            string? telefoneBanco = null;
+
+            try
+            {
+                con.Open();
+
+                MySqlCommand query = new MySqlCommand("SELECT id, telefone FROM parceiro WHERE cpf = @cpf", con);
+                query.Parameters.AddWithValue("@cpf", cpf);
+                query.Parameters.AddWithValue("@telefone", telefone);
+
+                MySqlDataReader leitor = query.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        string celular = leitor["telefone"].ToString();
+
+                        if (celular == telefone)
+                        {
+                            status = true;
+                            telefoneBanco = celular;
+                        }
+                        else
+                        {
+                            status = false;
+                            telefoneBanco = "*********" + celular.Substring(celular.Length - 2);
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+            catch
+            {
+                status = false;
+            }
+
+            ParceiroDTO dto = new ParceiroDTO
+            {
+                Status = status,
+                Telefone = telefoneBanco
+            };
+
+            return dto;
+        }
+
         public bool DesativarParceiro()
         {
             MySqlConnection con = new MySqlConnection(Conexao.CodConexao);
@@ -945,8 +1028,8 @@ namespace IndicaLMR.Classes
 
     public class ParceiroDTO()
     {
-        public bool? NovoParceiro { get; set; }
-        public int? Id { get; set; }
+        public bool? Status { get; set; }
+        public string Telefone { get; set; }
     }
 
     public class ParceirosDTO

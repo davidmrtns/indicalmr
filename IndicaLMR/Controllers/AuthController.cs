@@ -89,11 +89,11 @@ namespace IndicaLMR.Controllers
         [HttpGet("novo-parceiro/{telefone}")]
         public IActionResult VerificarNovoParceiro(string telefone)
         {
-            ParceiroDTO dto = Parceiro.VerificarNovoParceiro(telefone);
+            bool? novoParceiro = Parceiro.VerificarNovoParceiro(telefone);
 
-            if (dto.NovoParceiro != null)
+            if (novoParceiro != null)
             {
-                return Ok(dto);
+                return Ok(novoParceiro);
             }
             else
             {
@@ -120,7 +120,7 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                int resultado = Parceiro.VerificarParceiro(cpf);
+                bool resultado = Parceiro.VerificarParceiro(cpf);
                 return Ok(resultado);
             }
             catch
@@ -134,12 +134,39 @@ namespace IndicaLMR.Controllers
         {
             try
             {
-                bool resposta = Parceiro.AtualizarDados((int)parceiroModel.id!, parceiroModel.cpf, parceiroModel.senha);
+                bool resposta = Parceiro.AtualizarDados(parceiroModel.telefone, parceiroModel.cpf, parceiroModel.senha);
                 return Ok(resposta);
             }
             catch
             {
                 return BadRequest();
+            }
+        }
+
+        [HttpPost("atualizar-senha/verificar")]
+        public IActionResult VerificarDadosRecuperarSenha([FromBody] ParceiroModel parceiroModel)
+        {
+            try
+            {
+                ParceiroDTO dto = Parceiro.VerificarCadastroAlterarSenha(parceiroModel.cpf, parceiroModel.telefone);
+                return Ok(dto);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("atualizar-senha")]
+        public IActionResult RecuperarSenha([FromBody] ParceiroModel parceiroModel)
+        {
+            try
+            {
+                return Ok(Parceiro.RecuperarSenha(parceiroModel.cpf, parceiroModel.telefone, parceiroModel.senha));
+            }
+            catch
+            {
+                return BadRequest(false);
             }
         }
 

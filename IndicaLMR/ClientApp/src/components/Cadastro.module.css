@@ -110,10 +110,13 @@ div.campo div.campoexibirsenha p.exibirsenha{
     border: 0;
     background: #d9d9d9;
     transition: 1s;
+    margin-bottom: 35px;
 }
 
-.formulario button {
-    margin-bottom: 35px;
+.formulario button.btcancelar{
+    background: #6c6c6c;
+    border: 1px solid #ffffff;
+    margin-top: 10px;
 }
 
 .mensagem {

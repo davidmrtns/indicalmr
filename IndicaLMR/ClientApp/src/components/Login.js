@@ -3,7 +3,7 @@ import Recursos from "../classes/Recursos";
 import style from "./Login.module.css";
 import Fetch from "../classes/Fetch";
 import InputMask from "react-input-mask";
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faKey } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Login() {
@@ -12,7 +12,7 @@ function Login() {
     const LMRLogo = recursos.getLMRLogo();
     const [mensagem, setMensagem] = useState(null);
     const [enviado, setEnviado] = useState(null);
-    const [cpfDigitado, setCpfDigitado] = useState(false);
+    const [cpf, setCpf] = useState(false);
     const [exibirSenha, setExibirSenha] = useState(false);
 
     function enviar(e) {
@@ -24,11 +24,11 @@ function Login() {
     async function enviarSolicitacao() {
         setEnviado(true);
 
-        var cpf = document.getElementById("cpf").value.replace(/[.\-_]/g, '');
+        var cpfFormatado = cpf.replace(/[.\-_]/g, '');
         var senha = document.getElementById("senha").value;
 
-        if (cpf.length === 11 && senha) {
-            var resultado = await fetch.conectar(cpf, senha);
+        if (cpfFormatado.length === 11 && senha) {
+            var resultado = await fetch.conectar(cpfFormatado, senha);
 
             if (resultado.status === 200) {
                 window.location.href = "/";
@@ -50,11 +50,14 @@ function Login() {
                     <h1>Login</h1>
                     <form autoComplete="on">
                         <div className={style.campo}>
-                            <InputMask name="cpf" mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={() => setCpfDigitado(false)} />
+                            <InputMask name="cpf" mask="999.999.999-99" placeholder="CPF" id="cpf" type="text" onChange={(e) => setCpf(e.target.value)} />
                         </div>
                         <div className={style.campo}>
                             <input name="senha" placeholder="Senha" id="senha" type={exibirSenha === false ? "password" : "text"} onKeyDown={(e) => enviar(e)} />
                             <p className={style.exibirsenha}><FontAwesomeIcon icon={exibirSenha === false ? faEye : faEyeSlash} onClick={() => setExibirSenha(!exibirSenha)} /></p>
+                        </div>
+                        <div>
+                            <a className={style.link} href="/recuperar"><FontAwesomeIcon icon={faKey} /> Esqueci minha senha</a>
                         </div>
                         {mensagem ? <p className={style.mensagem}>{mensagem}</p> : ""}
                         <div className={style.botao}>

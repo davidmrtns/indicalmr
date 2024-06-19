@@ -112,7 +112,27 @@
         return resposta;
     }
 
-    async atualizarDadosParceiro(id, cpf, senha) {
+    async verificarDadosRecuperarSenha(cpf, celular) {
+        var resposta;
+
+        try {
+            await fetch('auth/atualizar-senha/verificar', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cpf: cpf,
+                    telefone: celular
+                })
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null;
+        }
+        return resposta;
+    }
+
+    async atualizarDadosParceiro(celular, cpf, senha) {
         var response;
 
         try {
@@ -122,7 +142,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: id,
+                    telefone: celular,
                     cpf: cpf,
                     senha: senha
                 })
@@ -143,6 +163,27 @@
                 headers: {
                     'Content-Type': 'application/json'
                 }
+            }).then((response) => response.json()).then((data) => { resposta = data });
+        } catch {
+            resposta = null
+        }
+        return resposta;
+    }
+
+    async recuperarSenha(cpf, celular, senha) {
+        var resposta;
+
+        try {
+            await fetch('auth/atualizar-senha', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cpf: cpf,
+                    telefone: celular,
+                    senha: senha
+                })
             }).then((response) => response.json()).then((data) => { resposta = data });
         } catch {
             resposta = null

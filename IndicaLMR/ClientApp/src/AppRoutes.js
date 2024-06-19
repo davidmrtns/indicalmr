@@ -1,6 +1,7 @@
 import HomePage from "./paginas/HomePage";
 import Login from "./components/Login";
 import Cadastro from "./components/Cadastro";
+import RecuperarSenha from "./components/RecuperarSenha";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import PrivateRoute from "./paginas/PrivateRoute";
 import PrivateRouteEscritorio from "./paginas/PrivateRouteEscritorio";
@@ -20,6 +21,7 @@ const AppRoutes = () => {
                 <Route path="editar-dados" element={<EditarDados />} />
             </Route>
             <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/recuperar" element={<RecuperarSenha />} />
             <Route path="politica-de-privacidade" element={<PrivacyPolicyPage />} />
             <Route path="/escritorio" element={<PrivateRouteEscritorio />}>
                 <Route path="" element={<SearchPage />} />
