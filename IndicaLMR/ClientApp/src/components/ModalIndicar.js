@@ -57,7 +57,7 @@ function ModalIndicar(props) {
                 }
             }
         } else {
-            setMensagem("Digite um CPF e celular válidos");
+            setMensagem("Digite um nome e celular válidos");
         }
     }
 

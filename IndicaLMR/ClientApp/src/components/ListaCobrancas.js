@@ -46,7 +46,7 @@ function ListaCobrancas() {
                                 <thead>
                                     <tr>
                                         <th scope="col">Data</th>
-                                        <th scope="col">Descricao</th>
+                                        <th scope="col">Descrição</th>
                                         <th scope="col">Valor</th>
                                     </tr>
                                 </thead>

@@ -12,7 +12,7 @@ function Login() {
     const LMRLogo = recursos.getLMRLogo();
     const [mensagem, setMensagem] = useState(null);
     const [enviado, setEnviado] = useState(null);
-    const [cpf, setCpf] = useState(false);
+    const [cpf, setCpf] = useState('');
     const [exibirSenha, setExibirSenha] = useState(false);
 
     function enviar(e) {

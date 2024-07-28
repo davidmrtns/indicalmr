@@ -12,6 +12,7 @@ div.dados {
     background: #ffb400;
     width: 60%;
     text-align: center;
+    overflow-y: auto;
 }
 
 div.dados p.fechar{
