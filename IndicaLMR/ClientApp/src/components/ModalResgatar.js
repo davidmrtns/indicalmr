@@ -144,7 +144,7 @@ function ModalResgatar(props) {
                         <Button onClick={() => fechar()}>Entendi</Button>
                     </> : <>
                         <Button onClick={() => fechar()}>Cancelar</Button>
-                        <Button className={confirmarPremio === true ? style.btconfirmar : style.btresgatar} disabled={saldoResgate >= 1 ? false : true} onClick={idPremioSelecionado === 0 ? () => setExibirPremios(true) : () => resgatarPremio()}>Resgatar prêmio</Button>
+                        <Button className={confirmarPremio === true ? style.btconfirmar : style.btresgatar} disabled={saldoResgate >= 0 ? false : true} onClick={idPremioSelecionado === 0 ? () => setExibirPremios(true) : () => resgatarPremio()}>Resgatar prêmio</Button>
                     </>
                 }
             </Modal.Footer>
